@@ -6,3 +6,5 @@ Statistics
 StatsBase
 TimeseriesSurrogates
 StateSpaceReconstruction 0.2.3 0.2.4
+Conda
+PyCall
