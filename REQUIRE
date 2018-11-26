@@ -1,3 +1,4 @@
+Julia 1.0
 Distances
 DynamicalSystems
 NearestNeighbors
@@ -5,6 +6,6 @@ StateSpaceReconstruction
 Statistics
 StatsBase
 TimeseriesSurrogates
-StateSpaceReconstruction 0.2.3 0.2.4
+StateSpaceReconstruction 0.3.0
 Conda
 PyCall
