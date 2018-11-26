@@ -281,3 +281,8 @@ function crossmap(driver, response;
 
     return correspondence
 end
+
+export
+predict_point!,
+find_nearest!,
+crossmap
