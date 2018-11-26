@@ -1,4 +1,4 @@
-
+using StateSpaceReconstruction
 include("validate_input.jl")
 
 """
@@ -57,16 +57,22 @@ Science (2012): 1227079.
 
 """
 function predict_point!(predictions, i, driver_values, u, w, distances, dim)
+    if distances[1] == 0
+        @warn "The first distance is zero. Will yield division by zero"
+    end
     for j in 1:(dim + 1)
         u[j] = exp(-(distances[j]/distances[1]))
     end
-
+    # The `predictions` vector is pre-allocated and `predictions[i]` may
+    # have a nonzero value if it has been visited in a previous iteration.
+    # Reset, so that we are always starting the prediction from zero.
+    predictions[i] = 0.0
     for j in 1:(dim + 1)
-        w[j] = u[j] / sum(u)
-        predictions[i] += w[j] * driver_values[j]
+        #w[j] = u[j] / sum(u)
+        predictions[i] =+ sum((u[j] / sum(u)) .* driver_values)
     end
-
 end
+
 
 function find_nearest!(nearest_idxs, nearest_dists, i, idxs, dists, dim, exclusion_radius)
     if (2 * exclusion_radius + 2 + dim) > length(idxs[1])
@@ -193,8 +199,9 @@ function crossmap(driver, response;
             ν::Int = 0,
             libsize::Int = length(driver) - dim*τ - abs(ν),
             n_reps::Int = 100,
-            replace::Bool = false,
+            replace::Bool = true,
             exclusion_radius::Int = 0,
+            jitter::Float64 = 1e-3,
             which_is_surr::Symbol = :none,
             surr_func::Function = randomshuffle,
             tree_type = NearestNeighbors.KDTree,
@@ -207,10 +214,6 @@ function crossmap(driver, response;
     validate_surr(which_is_surr, surr_func)
     validate_libsize(libsize, driver, dim, τ, ν, replace)
 
-    ######################################################################
-    # If required, replace one of both time series with a surrogate
-    # realization.
-    ######################################################################
     if which_is_surr == :response
         response = surr_func(response)
     elseif which_is_surr == :driver
@@ -228,46 +231,49 @@ function crossmap(driver, response;
     # smallest library sizes and number of repetitions.
     ######################################################################
     embedding_lags = collect(1:-τ:-(τ*dim - 1))
-    embedding = embed([response], [1 for i in 1:dim], embedding_lags).points
-    L = size(embedding, 2)
+    embedding = StateSpaceReconstruction.Embeddings.embed([response], [1 for i in 1:dim], embedding_lags).points
+    n_embedding_pts = size(embedding, 2)
+
+    validate_embedding!(embedding, jitter)
     tree = tree_type(embedding, distance_metric)
 
     idxs, dists = knn(tree, embedding, dim + 2 + 2*exclusion_radius + 1, true)
-    nearest_idxs = [Vector{Int32}(undef, dim + 1) for i = 1:L]
-    nearest_dists = [Vector{Float64}(undef, dim + 1) for i = 1:L]
+    nearest_idxs = [zeros(Int32, dim + 1) for i = 1:n_embedding_pts]
+    nearest_dists = [zeros(Float64, dim + 1) for i = 1:n_embedding_pts]
 
-    for i in 1:L
+    for i in 1:n_embedding_pts
         find_nearest!(nearest_idxs, nearest_dists, i, idxs, dists, dim, exclusion_radius)
     end
 
     ######################################################################
     # Cross mapping
     ######################################################################
-
-    # Pre-allocate vector to hold the time indices of the library points
-    # we select at each cross map repetition.
-    point_idxs = Vector{Int32}(undef, libsize)
-
     # Pre-allocate vectors to hold weights and coefficients, as well as
     # the predictions, for the prediction part of the algorithm.
     u = Vector{Float64}(undef, dim + 1)
     w = Vector{Float64}(undef, dim + 1)
-    predictions =  Vector{Float64}(undef, length(point_idxs))
+    predictions =  zeros(Float64, libsize)
+
+    # Pre-allocate vector to hold the time indices of the library points
+    # we select at each cross map repetition (it is from these points
+    # predictions are made).
+    point_idxs = zeros(Int32, libsize)
 
     # Pre-allocate vector to hold the correspondences between actual
     # and predicted values of the driver time series.
-    correspondence = Vector{Float64}(undef, n_reps)
+    correspondence = zeros(Float64, n_reps)
 
     for k in 1:n_reps
         if ν >= 0
-            sample!((1 + ν):L, point_idxs, replace = replace)
+            sample!((1 + ν):n_embedding_pts, point_idxs, replace = replace)
         else
-            sample!(1:(L - abs(ν)), point_idxs, replace = replace)
+            sample!(1:(n_embedding_pts - abs(ν)), point_idxs, replace = replace)
         end
 
+        # For every point selected at this repetition, make a prediction.
         @inbounds for i in 1:length(point_idxs)
-            pt_idx = point_idxs[i]
-            predict_point!(predictions, i, driver[nearest_idxs[pt_idx]], u, w, nearest_dists[pt_idx], dim)
+            idx = point_idxs[i]
+            predict_point!(predictions, i, driver[nearest_idxs[idx]], u, w, nearest_dists[idx], dim)
         end
 
         correspondence[k] = correspondence_measure(predictions, driver[point_idxs .- ν])
@@ -277,5 +283,6 @@ function crossmap(driver, response;
 end
 
 export
-crossmap,
-find_nearest!
+predict_point!,
+find_nearest!,
+crossmap
