@@ -47,7 +47,7 @@
 	end
 
 	@testset "Surrogates" begin
-	    x, y = rand(100), rand(100)
+    x, y = rand(100), rand(100)
 	    @testset "Surrogate types" begin
 	        surrogate_funcs = [TimeseriesSurrogates.randomshuffle,
 	                            TimeseriesSurrogates.randomphases,
@@ -64,11 +64,12 @@
 	    end
 	end
 
-	using StatsBase
 	@testset "Correspondence measures" begin
-	    x, y = rand(100), rand(100)
-	    #@test all(crossmap(x, y, correspondence_measure = StatsBase.rmsd) .>= 0) 
-	    @test all([-1 <= x <= 1 for x in crossmap(x, y, correspondence_measure = StatsBase.cor)])
+	    @testset "$i" for i in 1:100
+	        x, y = rand(100), rand(100)
+	        @test all(crossmap(x, y, correspondence_measure = StatsBase.rmsd) .>= 0)
+	        @test all([-1 <= x <= 1 for x in crossmap(x, y, correspondence_measure = StatsBase.cor)])
+	    end
 	end
 
 end
