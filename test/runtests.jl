@@ -10,4 +10,5 @@ using NearestNeighbors
 using TimeseriesSurrogates
 using StateSpaceReconstruction
 
+include("crossmapping.jl")
 include("convergentcrossmapping.jl")
