@@ -3,8 +3,6 @@ Distances
 DynamicalSystems
 NearestNeighbors
 StateSpaceReconstruction
-Statistics
-StatsBase
 TimeseriesSurrogates
 StateSpaceReconstruction 0.3.0
 Conda
