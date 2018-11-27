@@ -8,5 +8,6 @@ using StatsBase
 using Distances
 using NearestNeighbors
 using TimeseriesSurrogates
+using StateSpaceReconstruction
 
 include("convergentcrossmapping.jl")
