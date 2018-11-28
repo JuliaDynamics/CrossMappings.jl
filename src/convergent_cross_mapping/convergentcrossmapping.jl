@@ -337,3 +337,8 @@ function convergentcrossmap(driver,
             kwargs...)
     end
 end
+
+export
+ccm,
+ccm_with_summary,
+convergentcrossmap
