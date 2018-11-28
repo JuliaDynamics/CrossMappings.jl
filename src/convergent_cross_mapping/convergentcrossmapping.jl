@@ -1,5 +1,6 @@
 include("validate_input.jl")
 
+
 """
     ccm_with_summary(driver,
             response,
@@ -123,6 +124,7 @@ function ccm_with_summary(driver,
                 uncertainties[i] = std(correlations)
             end
         end
+
         if average_measure == :none
             return uncertainties
         elseif uncertainty_measure == :none
@@ -219,6 +221,7 @@ function ccm(driver,
     [crossmap(driver[1:ts_len], response[1:ts_len]; kwargs...)
             for ts_len in timeseries_lengths]
 end
+
 
 """
     convergentcrossmap(driver,
@@ -329,6 +332,9 @@ function convergentcrossmap(driver,
         ccm_with_summary(driver,
             response,
             timeseries_lengths;
+            average_measure = average_measure,
+            uncertainty_measure = uncertainty_measure,
+            quantiles = quantiles,
             kwargs...)
     else
         ccm(driver,
@@ -336,9 +342,11 @@ function convergentcrossmap(driver,
             timeseries_lengths;
             kwargs...)
     end
+
 end
 
+
 export
-ccm,
 ccm_with_summary,
+ccm,
 convergentcrossmap
