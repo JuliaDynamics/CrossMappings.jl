@@ -67,9 +67,32 @@ function validate_surr(which_is_surr, surr_func)
 end
 
 
+function validate_uncertainty_measure(uncertainty_measure)
+    if uncertainty_measure ∉ [:quantile, :std, :none]
+        throw(DomainError(uncertainty_measure, "uncertainty_measure = $uncertainty_measure is invalid. Must be either :quantile, :std or :none."))
+    end
+end
+
+
+function validate_average_measure(average_measure)
+    if average_measure ∉ [:mean, :median, :none]
+        throw(DomainError(average_measure, "average_measure = $average_measure is invalid. Must be either :median, :mean or :none."))
+    end
+end
+
+
+function validate_output_selection(average_measure, uncertainty_measure, summarise)
+    if ((average_measure, uncertainty_measure) == (:none, :none)) && summarise
+        throw(ErrorException("Setting both average_measure and uncertainty_measure to :none while summarise = true will not produce output."))
+    end
+end
+
 export
 validate_surr,
 validate_libsize,
 validate_embedding!,
 validate_embedding_params,
-validate_exclusion_radius!
+validate_exclusion_radius!,
+validate_uncertainty_measure,
+validate_average_measure,
+validate_output_selection
