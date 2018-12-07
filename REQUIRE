@@ -7,5 +7,3 @@ PyCall
 StateSpaceReconstruction
 TimeseriesSurrogates
 StatsBase
-Conda
-PyCall
