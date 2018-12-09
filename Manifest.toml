@@ -87,9 +87,9 @@ version = "0.5.1"
 
 [[DSP]]
 deps = ["AbstractFFTs", "Compat", "FFTW", "LinearAlgebra", "Polynomials", "Random", "Reexport", "SpecialFunctions"]
-git-tree-sha1 = "c90967ff4c5e99f652b278624634dcef73b58848"
+git-tree-sha1 = "5ec38ebc4ddf6320ad50b826eb8fd7fb521993a5"
 uuid = "717857b8-e6f2-59f4-9121-6e50c889abd2"
-version = "0.5.1"
+version = "0.5.2"
 
 [[DataStructures]]
 deps = ["InteractiveUtils", "OrderedCollections", "Random", "Serialization", "Test"]
@@ -102,10 +102,10 @@ deps = ["Printf"]
 uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
 
 [[DelayEmbeddings]]
-deps = ["Distances", "LinearAlgebra", "NearestNeighbors", "StaticArrays", "StatsBase", "Test"]
-git-tree-sha1 = "6d42460dc2c84058850b26da7b5174fb6fcd213e"
+deps = ["Distances", "LinearAlgebra", "NearestNeighbors", "StaticArrays", "Statistics", "StatsBase", "Test"]
+git-tree-sha1 = "0b280695686867e626b4c988c093fd5659de2641"
 uuid = "5732040d-69e3-5649-938a-b6b4f237613f"
-version = "0.1.1"
+version = "0.2.0"
 
 [[DelimitedFiles]]
 deps = ["Mmap"]
@@ -119,9 +119,9 @@ version = "0.3.2"
 
 [[DiffEqBase]]
 deps = ["Compat", "IteratorInterfaceExtensions", "LinearAlgebra", "RecipesBase", "RecursiveArrayTools", "Requires", "Roots", "SparseArrays", "StaticArrays", "Statistics", "SuiteSparse", "TableTraits", "Test", "TreeViews"]
-git-tree-sha1 = "b8c9c5a296e426d0ad978e6e7ad699dde444d3a1"
+git-tree-sha1 = "9b077135e38482dcf74daf2406b9da4dc4dcb0ca"
 uuid = "2b5f629d-d688-5b77-993f-72d75c75574e"
-version = "4.31.1"
+version = "4.31.2"
 
 [[DiffEqDiffTools]]
 deps = ["LinearAlgebra", "Test"]
@@ -491,10 +491,10 @@ uuid = "276daf66-3868-5448-9aa4-cd146d93841b"
 version = "0.7.2"
 
 [[StateSpaceReconstruction]]
-deps = ["Conda", "Distances", "Distributions", "LinearAlgebra", "NearestNeighbors", "PyCall", "Reexport", "Simplices", "StaticArrays", "Statistics", "Test"]
-git-tree-sha1 = "211298d65326fd109bb00c92ce0adca0f4c09435"
+deps = ["Conda", "Distances", "Distributions", "DynamicalSystemsBase", "LinearAlgebra", "NearestNeighbors", "PyCall", "Reexport", "Simplices", "StaticArrays", "Statistics", "Test"]
+git-tree-sha1 = "fe68aee28285c4dd16791384be7b20915e9a0f54"
 uuid = "1441a9f6-6a74-5418-a591-cdf1d78a07f0"
-version = "0.3.1"
+version = "0.3.2"
 
 [[StaticArrays]]
 deps = ["InteractiveUtils", "LinearAlgebra", "Random", "Statistics", "Test"]
