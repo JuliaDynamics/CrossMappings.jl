@@ -1,4 +1,5 @@
 using StateSpaceReconstruction
+
 include("validate_input.jl")
 
 """
@@ -231,7 +232,7 @@ function crossmap(driver, response;
     # smallest library sizes and number of repetitions.
     ######################################################################
     embedding_lags = collect(1:-τ:-(τ*dim - 1))
-    embedding = StateSpaceReconstruction.Embeddings.embed([response], [1 for i in 1:dim], embedding_lags).points
+    embedding = StateSpaceReconstruction.Embeddings.customembed([response], [1 for i in 1:dim], embedding_lags).points
     n_embedding_pts = size(embedding, 2)
 
     validate_embedding!(embedding, jitter)
