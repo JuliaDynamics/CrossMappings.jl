@@ -1,6 +1,3 @@
-include("validate_input.jl")
-
-
 """
     ccm_with_summary(driver,
             response,

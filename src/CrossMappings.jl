@@ -7,6 +7,7 @@ using StateSpaceReconstruction
 using Statistics
 using StatsBase
 
+include("convergent_cross_mapping/validate_input.jl")
 include("convergent_cross_mapping/crossmapping.jl")
 include("convergent_cross_mapping/convergentcrossmapping.jl")
 
