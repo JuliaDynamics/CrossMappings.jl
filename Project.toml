@@ -1,5 +1,5 @@
 name = "CrossMappings"
-uuid = "8e2c1068-ec32-11e8-3a10-39476e76f104"
+uuid = "7011085d-2e9b-5a7b-b0c2-f102c05e50c2"
 authors = ["Kristian Agasøster Haaga <kahaaga@gmail.com>", "Tor Einar Møller <temolle@gmail.com>"]
 
 [deps]
