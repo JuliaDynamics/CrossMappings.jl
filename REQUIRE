@@ -5,6 +5,6 @@ Distances
 DynamicalSystems
 NearestNeighbors
 PyCall
-StateSpaceReconstruction 0.3.1 0.3.2
+StateSpaceReconstruction 0.4.0
 TimeseriesSurrogates
 StatsBase
