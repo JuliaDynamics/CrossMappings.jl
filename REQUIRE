@@ -8,3 +8,4 @@ PyCall
 StateSpaceReconstruction 0.4.0
 TimeseriesSurrogates
 StatsBase
+UncertainData

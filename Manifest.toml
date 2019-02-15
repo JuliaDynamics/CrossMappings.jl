@@ -39,6 +39,30 @@ git-tree-sha1 = "055eb2690182ebc31087859c3dd8598371d3ef9e"
 uuid = "b99e7846-7c00-51b0-8f62-c81ae34c0232"
 version = "0.5.3"
 
+[[Bootstrap]]
+deps = ["DataFrames", "Distributions", "Random", "Statistics", "StatsBase", "StatsModels", "Test"]
+git-tree-sha1 = "b97249dedcdacc869c8545ebb856a97d4415641b"
+uuid = "e28b5b4c-05e8-5b66-bc03-6f0c0a0a06e0"
+version = "2.0.1"
+
+[[CRlibm]]
+deps = ["Libdl", "Test"]
+git-tree-sha1 = "805164abcd31facf3a7e5b7d803a0d16b23329bc"
+uuid = "96374032-68de-5a5b-8d9e-752f78720389"
+version = "0.7.1"
+
+[[Calculus]]
+deps = ["Compat"]
+git-tree-sha1 = "f60954495a7afcee4136f78d1d60350abd37a409"
+uuid = "49dc2e85-a5d0-5ad3-a950-438e2897f1b9"
+version = "0.4.1"
+
+[[CategoricalArrays]]
+deps = ["Compat", "Future", "Missings", "Printf", "Reexport", "Requires"]
+git-tree-sha1 = "94d16e77dfacc59f6d6c1361866906dbb65b6f6b"
+uuid = "324d7699-5711-5eae-9e2f-1d82baa6b597"
+version = "0.5.2"
+
 [[CausalityToolsBase]]
 deps = ["ChaosTools", "DelayEmbeddings", "StaticArrays", "Test"]
 git-tree-sha1 = "b9fa83fcc442cdb3daddabfd530823f8a68038d5"
@@ -50,6 +74,12 @@ deps = ["Combinatorics", "DiffEqBase", "Distances", "DynamicalSystemsBase", "For
 git-tree-sha1 = "df13c89cd7db75f9353525f46f94cb7a1015df7d"
 uuid = "608a59af-f2a3-5ad4-90b4-758bdf3122a7"
 version = "1.5.0"
+
+[[CodecZlib]]
+deps = ["BinaryProvider", "Libdl", "Test", "TranscodingStreams"]
+git-tree-sha1 = "e3df104c84dfc108f0ca203fd7f5bbdc98641ae9"
+uuid = "944b1d66-785c-5afd-91f1-9de20f533193"
+version = "0.5.1"
 
 [[ColorTypes]]
 deps = ["FixedPointNumbers", "Random", "Test"]
@@ -99,6 +129,18 @@ git-tree-sha1 = "5ec38ebc4ddf6320ad50b826eb8fd7fb521993a5"
 uuid = "717857b8-e6f2-59f4-9121-6e50c889abd2"
 version = "0.5.2"
 
+[[DataFrames]]
+deps = ["CategoricalArrays", "CodecZlib", "Compat", "DataStreams", "Dates", "InteractiveUtils", "IteratorInterfaceExtensions", "LinearAlgebra", "Missings", "Printf", "Random", "Reexport", "SortingAlgorithms", "Statistics", "StatsBase", "TableTraits", "Tables", "Test", "TranscodingStreams", "Unicode", "WeakRefStrings"]
+git-tree-sha1 = "9cfed75401d25d281076eb5d82de148ac2933f9e"
+uuid = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+version = "0.17.1"
+
+[[DataStreams]]
+deps = ["Dates", "Missings", "Test", "WeakRefStrings"]
+git-tree-sha1 = "69c72a1beb4fc79490c361635664e13c8e4a9548"
+uuid = "9a8bc11e-79be-5b39-94d7-1ccc349a1a85"
+version = "0.4.1"
+
 [[DataStructures]]
 deps = ["InteractiveUtils", "OrderedCollections", "Random", "Serialization", "Test"]
 git-tree-sha1 = "ca971f03e146cf144a9e2f2ce59674f5bf0e8038"
@@ -124,6 +166,12 @@ deps = ["Compat", "IteratorInterfaceExtensions", "LinearAlgebra", "RecipesBase",
 git-tree-sha1 = "cd1f12b447ef3be91a4d061d3bb1d6459a978a78"
 uuid = "2b5f629d-d688-5b77-993f-72d75c75574e"
 version = "5.2.2"
+
+[[DiffEqDiffTools]]
+deps = ["LinearAlgebra", "Test"]
+git-tree-sha1 = "4b21dd83c341412a0607334ac64bb5593a4bd583"
+uuid = "01453d9d-ee7c-5054-8395-0335cb756afa"
+version = "0.8.0"
 
 [[DiffResults]]
 deps = ["Compat", "StaticArrays"]
@@ -165,11 +213,23 @@ git-tree-sha1 = "dac4782f695f2910c2b1e96fc59384915fb91ec7"
 uuid = "6e36e845-645a-534a-86f2-f5d4aa5a06b4"
 version = "1.2.3"
 
+[[ErrorfreeArithmetic]]
+deps = ["Test"]
+git-tree-sha1 = "1d6e9d759a3cefca9b96ab91cba43a8578048923"
+uuid = "90fa49ef-747e-5e6f-a989-263ba693cf1a"
+version = "0.3.1"
+
 [[FFTW]]
 deps = ["AbstractFFTs", "BinaryProvider", "Compat", "Conda", "Libdl", "LinearAlgebra", "Reexport", "Test"]
 git-tree-sha1 = "29cda58afbf62f35b1a094882ad6c745a47b2eaa"
 uuid = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
 version = "0.2.4"
+
+[[FastRounding]]
+deps = ["ErrorfreeArithmetic", "Test"]
+git-tree-sha1 = "224175e213fd4fe112db3eea05d66b308dc2bf6b"
+uuid = "fa42c844-2597-5d31-933b-ebd51ab2693f"
+version = "0.2.0"
 
 [[FixedPointNumbers]]
 deps = ["Test"]
@@ -183,11 +243,21 @@ git-tree-sha1 = "e393bd3b9102659fb24fe88caedec41f2bc2e7de"
 uuid = "f6369f11-7733-5829-9624-2563aa707210"
 version = "0.10.2"
 
+[[Future]]
+deps = ["Random"]
+uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
+
 [[GR]]
 deps = ["Base64", "DelimitedFiles", "LinearAlgebra", "Pkg", "Printf", "Random", "Serialization", "Sockets", "Test"]
 git-tree-sha1 = "3c62c19ddf86ff016829fdac1663cd3c75558c34"
 uuid = "28b8d3ca-fb5f-59d9-8090-bfdbd6d07a71"
 version = "0.37.0"
+
+[[HypothesisTests]]
+deps = ["Combinatorics", "Distributions", "LinearAlgebra", "Random", "Rmath", "Roots", "Statistics", "StatsBase", "Test"]
+git-tree-sha1 = "0fe2b78bd7cadcaed2071aab7ed12b40d220c392"
+uuid = "09f84164-cd44-5f33-b23f-e6b0d136a0d5"
+version = "0.8.0"
 
 [[InplaceOps]]
 deps = ["LinearAlgebra", "Test"]
@@ -205,6 +275,12 @@ git-tree-sha1 = "e8d1c381b1dc5343e5b6d37265acbe1de493d512"
 uuid = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
 version = "0.11.2"
 
+[[IntervalArithmetic]]
+deps = ["CRlibm", "FastRounding", "LinearAlgebra", "Markdown", "RecipesBase", "SetRounding", "StaticArrays", "Test"]
+git-tree-sha1 = "88fbfcc040299c99f9093f13539e26b165b6803a"
+uuid = "d1acc4aa-44c8-5952-acd4-ba5d80a2a253"
+version = "0.15.1"
+
 [[IteratorInterfaceExtensions]]
 deps = ["Test"]
 git-tree-sha1 = "5484e5ede2a4137b9643f4d646e8e7b87b794415"
@@ -217,11 +293,23 @@ git-tree-sha1 = "1f7a25b53ec67f5e9422f1f551ee216503f4a0fa"
 uuid = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 version = "0.20.0"
 
+[[KernelDensity]]
+deps = ["Distributions", "FFTW", "Interpolations", "Optim", "StatsBase", "Test"]
+git-tree-sha1 = "c1048817fe5711f699abc8fabd47b1ac6ba4db04"
+uuid = "5ab0869b-81aa-558d-bb23-cbf5423bbe9b"
+version = "0.5.1"
+
 [[LibGit2]]
 uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
 
 [[Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
+
+[[LineSearches]]
+deps = ["LinearAlgebra", "NLSolversBase", "NaNMath", "Parameters", "Printf", "Test"]
+git-tree-sha1 = "54eb90e8dbe745d617c78dee1d6ae95c7f6f5779"
+uuid = "d3d80556-e9d4-5f37-9878-2ab0fcc64255"
+version = "7.0.1"
 
 [[LinearAlgebra]]
 deps = ["Libdl"]
@@ -255,6 +343,12 @@ version = "0.4.0"
 [[Mmap]]
 uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
+[[NLSolversBase]]
+deps = ["Calculus", "DiffEqDiffTools", "DiffResults", "Distributed", "ForwardDiff", "LinearAlgebra", "Random", "SparseArrays", "Test"]
+git-tree-sha1 = "0c6f0e7f2178f78239cfb75310359eed10f2cacb"
+uuid = "d41bc354-129a-5804-8e4c-c37616107c6c"
+version = "7.3.1"
+
 [[NaNMath]]
 deps = ["Compat"]
 git-tree-sha1 = "ce3b85e484a5d4c71dd5316215069311135fa9f2"
@@ -272,6 +366,12 @@ deps = ["DelimitedFiles", "Test"]
 git-tree-sha1 = "e6893807f09c1d5517861ded8b203cb96cb7d44a"
 uuid = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
 version = "0.10.0"
+
+[[Optim]]
+deps = ["Calculus", "DiffEqDiffTools", "ForwardDiff", "LineSearches", "LinearAlgebra", "NLSolversBase", "NaNMath", "Parameters", "PositiveFactorizations", "Printf", "Random", "SparseArrays", "StatsBase", "Test"]
+git-tree-sha1 = "0f2a6c6ff9db396cc7af15bb1cf057a26662ff17"
+uuid = "429524aa-4258-5aef-a3af-852621145aeb"
+version = "0.17.2"
 
 [[OrderedCollections]]
 deps = ["Random", "Serialization", "Test"]
@@ -318,6 +418,12 @@ deps = ["LinearAlgebra", "SparseArrays", "Test"]
 git-tree-sha1 = "62142bd65d3f8aeb2226ec64dd8493349147df94"
 uuid = "f27b6e38-b328-58d1-80ce-0feddd5e7a45"
 version = "0.5.2"
+
+[[PositiveFactorizations]]
+deps = ["LinearAlgebra", "Test"]
+git-tree-sha1 = "86ae7329c4b5c266acf5c7c524a972300d991e1c"
+uuid = "85a6dd25-e78a-55b7-8502-1745935b8125"
+version = "0.2.1"
 
 [[Printf]]
 deps = ["Unicode"]
@@ -397,6 +503,12 @@ uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 [[Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
 
+[[SetRounding]]
+deps = ["Test"]
+git-tree-sha1 = "faca28c7937138d560ede5bfef2076d0cdf3584b"
+uuid = "3cc68bcd-71a2-5612-b932-767ffbe40ab0"
+version = "0.2.0"
+
 [[SharedArrays]]
 deps = ["Distributed", "Mmap", "Random", "Serialization"]
 uuid = "1a1011a3-84de-559e-8e89-a11a2f7dc383"
@@ -466,6 +578,12 @@ git-tree-sha1 = "b3a4e86aa13c732b8a8c0ba0c3d3264f55e6bb3e"
 uuid = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
 version = "0.8.0"
 
+[[StatsModels]]
+deps = ["Compat", "DataFrames", "StatsBase", "Test"]
+git-tree-sha1 = "b5a735dcd2be05f0af86709750d4d5f62ca4a25d"
+uuid = "3eaba693-59b7-5ba5-a881-562e759f1c8d"
+version = "0.5.0"
+
 [[SuiteSparse]]
 deps = ["Libdl", "LinearAlgebra", "SparseArrays"]
 uuid = "4607b0f0-06f3-5cda-b6b1-a6196a1729e9"
@@ -476,6 +594,12 @@ git-tree-sha1 = "eba4b1d0a82bdd773307d652c6e5f8c82104c676"
 uuid = "3783bdb8-4a98-5b6b-af9a-565f29a5fe9c"
 version = "0.4.1"
 
+[[Tables]]
+deps = ["IteratorInterfaceExtensions", "LinearAlgebra", "Requires", "TableTraits", "Test"]
+git-tree-sha1 = "37be2ed169d5771c1ac8d516d3bcb0093c49966e"
+uuid = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
+version = "0.1.15"
+
 [[Test]]
 deps = ["Distributed", "InteractiveUtils", "Logging", "Random"]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
@@ -485,6 +609,12 @@ deps = ["AbstractFFTs", "DSP", "Distributions", "InplaceOps", "Interpolations", 
 git-tree-sha1 = "e0d592ae14c88203249c8ada41078e7fa4e2a56a"
 uuid = "c804724b-8c18-5caa-8579-6025a0767c70"
 version = "0.2.1"
+
+[[TranscodingStreams]]
+deps = ["Pkg", "Random", "Test"]
+git-tree-sha1 = "a34a2d588e2d2825602bf14a24216d5c8b0921ec"
+uuid = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"
+version = "0.8.1"
 
 [[TreeViews]]
 deps = ["Test"]
@@ -501,6 +631,12 @@ version = "0.4.0"
 [[UUIDs]]
 deps = ["Random", "SHA"]
 uuid = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
+
+[[UncertainData]]
+deps = ["Bootstrap", "Combinatorics", "Distributions", "HypothesisTests", "Interpolations", "IntervalArithmetic", "KernelDensity", "Printf", "RecipesBase", "Reexport", "StaticArrays", "Statistics", "StatsBase", "Test"]
+git-tree-sha1 = "4d36f7e0345dabf8fb413146df1c3927176f970d"
+uuid = "dcd9ba68-c27b-5cea-ae21-829cd07325bf"
+version = "0.1.8"
 
 [[Unicode]]
 uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
@@ -522,6 +658,12 @@ deps = ["Compat", "DSP", "Reexport"]
 git-tree-sha1 = "4a53da1099523e7191ee5b95d6e5e32a88913b6d"
 uuid = "29a6e085-ba6d-5f35-a997-948ac2efa89a"
 version = "0.8.0"
+
+[[WeakRefStrings]]
+deps = ["Missings", "Random", "Test"]
+git-tree-sha1 = "cf70c71939e621a3fac4156a8bfb3c80d745794a"
+uuid = "ea10d353-3f73-51f8-a26c-33c1cb351aa5"
+version = "0.5.7"
 
 [[WoodburyMatrices]]
 deps = ["LinearAlgebra", "Random", "SparseArrays", "Test"]
