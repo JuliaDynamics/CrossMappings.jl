@@ -2,7 +2,7 @@ function validate_libsize(libsize, driver, dim, τ, ν, replace)
     n_available_pts = length(driver) - dim*τ - abs(ν)
     if libsize > n_available_pts
         if replace
-            @warn "libsize = $libsize > n_available_pts = $n_available_pts. Sampling with replacement."
+            #@warn "libsize = $libsize > n_available_pts = $n_available_pts. Sampling with replacement."
         else
             throw(DomainError(libsize, "libsize = $libsize > n_available_pts = $n_available_pts. Reduce `libsize` (preferably to something much smaller than `n_available_pts = $n_available_pts`) or enable sampling with replacement."))
         end
@@ -14,7 +14,7 @@ function validate_embedding!(embedding, jitter)
     maxval = abs(maximum(embedding))
     unique_pts = unique(embedding, dims = 2)
     if size(unique_pts, 2) < size(embedding, 2)
-        @warn "Not all embedding points are unique. Jittering coordinates by `rand(Uniform(-$jitter*maximum(embedding), $jitter*maximum(embedding)))`"
+        #@warn "Not all embedding points are unique. Jittering coordinates by `rand(Uniform(-$jitter*maximum(embedding), $jitter*maximum(embedding)))`"
 
         for i in 1:length(embedding)
             embedding[i] += rand(Uniform(-jitter*maxval, jitter*maxval))
