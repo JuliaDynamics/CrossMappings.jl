@@ -12,7 +12,7 @@ Compute the cross mapping between a `driver` series and a `response` series over
 different `timeseries_lengths` and return summary statistics of the results.
 
 ## Arguments
-- **`driver`**: The data series representing the putative driver process.
+- **`driver`**: The data series representing the putative driver process. 
 - **`response`**: The data series representing the putative response process.
 - **`timeseries_lengths`**: Time series length(s) for which to compute the
     cross mapping(s).
