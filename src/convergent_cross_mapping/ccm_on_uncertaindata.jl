@@ -1,4 +1,8 @@
-import UncertainData: UncertainDataset, UncertainIndexDataset, UncertainValueDataset
+import UncertainData: 
+    UncertainDataset, 
+    UncertainIndexDataset, 
+    UncertainValueDataset,
+    resample
 
 crossmap(driver::UncertainDataset, response::UncertainDataset; kwargs...) = 
     crossmap(resample(driver), resample(response); kwargs...)
