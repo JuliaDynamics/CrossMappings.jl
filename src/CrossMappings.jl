@@ -5,6 +5,7 @@ using NearestNeighbors
 using TimeseriesSurrogates
 using StateSpaceReconstruction
 using Statistics
+using Distributions
 using StatsBase
 
 include("convergent_cross_mapping/validate_input.jl")
