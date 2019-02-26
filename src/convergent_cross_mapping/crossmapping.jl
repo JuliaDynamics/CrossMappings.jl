@@ -206,10 +206,10 @@ function crossmap(driver, response;
             tree_type = NearestNeighbors.KDTree,
             distance_metric = Distances.Euclidean(),
             correspondence_measure = StatsBase.cor)
-
     points_available = length(response) - dim*τ
+     
     validate_exclusion_radius!(exclusion_radius, points_available)
-    validate_embedding_params(dim, τ, points_available)
+    validate_embedding_params(dim, τ, points_available, exclusion_radius)
     validate_surr(which_is_surr, surr_func)
     validate_libsize(libsize, driver, dim, τ, ν, replace)
 

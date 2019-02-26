@@ -33,7 +33,7 @@ function validate_exclusion_radius!(exclusion_radius, points_available)
 end
 
 
-function validate_embedding_params(dim, τ, points_available)
+function validate_embedding_params(dim, τ, points_available, exclusion_radius)
     if dim == 1
         @warn "`dim=$dim`, but must be at least 2 to construct an embedding."
     end
