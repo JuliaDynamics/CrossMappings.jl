@@ -1,5 +1,5 @@
-function validate_libsize(libsize, driver, dim, τ, ν, replace)
-    n_available_pts = length(driver) - dim*τ - abs(ν)
+function validate_libsize(libsize, source, dim, τ, ν, replace)
+    n_available_pts = length(source) - dim*τ - abs(ν)
     if libsize > n_available_pts
         if replace
             #@warn "libsize = $libsize > n_available_pts = $n_available_pts. Sampling with replacement."
@@ -28,7 +28,7 @@ function validate_exclusion_radius!(exclusion_radius, points_available)
         throw(DomainError(exclusion_radius, "`exclusion_radius=$exclusion_radius`. Must be ≧ 0."))
     end
     if exclusion_radius >= ceil(Int, 0.5*points_available)
-        throw(DomainError(exclusion_radius, "`exclusion_radius=$exclusion_radius >= ceil(Int, 0.5*(length(response) - dim*τ))=$points_available`. Please reduce `exclusion_radius`."))
+        throw(DomainError(exclusion_radius, "`exclusion_radius=$exclusion_radius >= ceil(Int, 0.5*(length(target) - dim*τ))=$points_available`. Please reduce `exclusion_radius`."))
     end
 end
 
@@ -47,7 +47,7 @@ function validate_embedding_params(dim, τ, points_available, exclusion_radius)
         @warn "`τ=$τ` is negative. The cross mapping algorithm is implemented assuming τ is positive."
     end
     if dim*τ >= ceil(Int, 0.5*points_available)
-        throw(DomainError(exclusion_radius, "`exclusion_radius=$exclusion_radius >= ceil(Int, 0.5*(length(response) - dim*τ))=$points_available`. Please reduce `exclusion_radius`."))
+        throw(DomainError(exclusion_radius, "`exclusion_radius=$exclusion_radius >= ceil(Int, 0.5*(length(target) - dim*τ))=$points_available`. Please reduce `exclusion_radius`."))
     end
 end
 
@@ -61,8 +61,8 @@ function validate_surr(which_is_surr, surr_func)
         throw(DomainError(surr_func, "surr_func = $surr_func is not a valid surrogate function from TimeseriesSurrogates.jl." ))
     end
 
-    if which_is_surr ∉ [:response, :driver, :none, :both]
-        throw(DomainError(which_is_surr, "which_is_surr = $which_is_surr is invalid. Must be either :response, :driver, :none or :both"))
+    if which_is_surr ∉ [:target, :source, :none, :both]
+        throw(DomainError(which_is_surr, "which_is_surr = $which_is_surr is invalid. Must be either :target, :source, :none or :both"))
     end
 end
 

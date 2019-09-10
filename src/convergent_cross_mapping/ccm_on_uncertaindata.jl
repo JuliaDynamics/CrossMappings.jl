@@ -4,46 +4,46 @@ import UncertainData:
     UncertainValueDataset,
     resample
 
-crossmap(driver::UncertainDataset, response::UncertainDataset; kwargs...) = 
-    crossmap(resample(driver), resample(response); kwargs...)
+crossmap(source::UncertainDataset, target::UncertainDataset; kwargs...) = 
+    crossmap(resample(source), resample(target); kwargs...)
 
-crossmap(driver::UncertainDataset, response; kwargs...) = 
-    crossmap(resample(driver), response; kwargs...)
+crossmap(source::UncertainDataset, target; kwargs...) = 
+    crossmap(resample(source), target; kwargs...)
 
-crossmap(driver, response::UncertainDataset; kwargs...) = 
-    crossmap(driver, resample(response); kwargs...)
+crossmap(source, target::UncertainDataset; kwargs...) = 
+    crossmap(source, resample(target); kwargs...)
 
-crossmap(driver::UncertainValueDataset, response::UncertainValueDataset; kwargs...) = 
-    crossmap(resample(driver), resample(response); kwargs...)
+crossmap(source::UncertainValueDataset, target::UncertainValueDataset; kwargs...) = 
+    crossmap(resample(source), resample(target); kwargs...)
 
-crossmap(driver::UncertainValueDataset, response; kwargs...) = 
-    crossmap(resample(driver), response; kwargs...)
+crossmap(source::UncertainValueDataset, target; kwargs...) = 
+    crossmap(resample(source), target; kwargs...)
 
-crossmap(driver, response::UncertainValueDataset; kwargs...) = 
-    crossmap(driver, resample(response); kwargs...)
+crossmap(source, target::UncertainValueDataset; kwargs...) = 
+    crossmap(source, resample(target); kwargs...)
 
-crossmap(driver::UncertainIndexDataset, response::UncertainIndexDataset; kwargs...) = 
+crossmap(source::UncertainIndexDataset, target::UncertainIndexDataset; kwargs...) = 
     throw(ArgumentError("Can't cross map between indices (e.g. time). That makes no sense."))
 
 
-ccm(driver::UncertainDataset, response::UncertainDataset, timeseries_lengths; kwargs...) = 
-    ccm(resample(driver), resample(response), timeseries_lengths; kwargs...)
+ccm(source::UncertainDataset, target::UncertainDataset, timeseries_lengths; kwargs...) = 
+    ccm(resample(source), resample(target), timeseries_lengths; kwargs...)
 
-ccm(driver::UncertainDataset, response, timeseries_lengths; kwargs...) = 
-    ccm(resample(driver), response, timeseries_lengths; kwargs...)
+ccm(source::UncertainDataset, target, timeseries_lengths; kwargs...) = 
+    ccm(resample(source), target, timeseries_lengths; kwargs...)
 
-ccm(driver, response::UncertainDataset, timeseries_lengths; kwargs...) = 
-ccm(driver, resample(response), timeseries_lengths; kwargs...)
+ccm(source, target::UncertainDataset, timeseries_lengths; kwargs...) = 
+ccm(source, resample(target), timeseries_lengths; kwargs...)
 
-ccm(driver::UncertainValueDataset, response::UncertainValueDataset, timeseries_lengths; kwargs...) = 
-    ccm(resample(driver), resample(response), timeseries_lengths; kwargs...)
+ccm(source::UncertainValueDataset, target::UncertainValueDataset, timeseries_lengths; kwargs...) = 
+    ccm(resample(source), resample(target), timeseries_lengths; kwargs...)
 
-ccm(driver::UncertainValueDataset, response, timeseries_lengths; kwargs...) = 
-    ccm(resample(driver), response, timeseries_lengths; kwargs...)
+ccm(source::UncertainValueDataset, target, timeseries_lengths; kwargs...) = 
+    ccm(resample(source), target, timeseries_lengths; kwargs...)
 
-ccm(driver, response::UncertainValueDataset, timeseries_lengths; kwargs...) = 
-    ccm(driver, resample(response), timeseries_lengths; kwargs...)
+ccm(source, target::UncertainValueDataset, timeseries_lengths; kwargs...) = 
+    ccm(source, resample(target), timeseries_lengths; kwargs...)
 
-ccm(driver::UncertainIndexDataset, response::UncertainIndexDataset, timeseries_length; kwargs...) = 
+ccm(source::UncertainIndexDataset, target::UncertainIndexDataset, timeseries_length; kwargs...) = 
     throw(ArgumentError("Can't cross map between indices (e.g. time). That makes no sense."))
 

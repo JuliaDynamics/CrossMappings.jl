@@ -1,16 +1,16 @@
 import StateSpaceReconstruction: cembed
 
 """
-    predict_point!(predictions, i, driver_values, u, w, dists, dim)
+    predict_point!(predictions, i, source_values, u, w, dists, dim)
 
 The prediction part of the convergent cross mapping algorithm.
 
 ## Algorithm
 
-Consider the point in the delay embedding of `response` point with
+Consider the point in the delay embedding of `target` point with
 time index `i`. Denote the time indices of its nearest
 neighbors ``t_1, t_2, \\ldots, t_{dim+1}``. Denote the scalar values
-of `driver` at those time indices ``y_1, y_2, \\ldots, y_{dim+1}``.
+of `source` at those time indices ``y_1, y_2, \\ldots, y_{dim+1}``.
 
 Given `distances` ``d_1, d_2, \\ldots, d_{dim+1}`` from the `i`-th
 point to its nearest neighbors, we compute the weights `w` from
@@ -18,7 +18,7 @@ the cross mapping algorithm ([Sugihara et al, 2012; supplementary
 material, page 4](http://science.sciencemag.org/content/sci/suppl/2012/09/19/science.1227079.DC1/Sugihara.SM.pdf)). The weights `w` and coefficients `u` are stored in
 pre-allocated vectors.
 
-A prediction for the observation with time index `i` in the `driver`
+A prediction for the observation with time index `i` in the `source`
 timeseries, call it ``\\hat{y}(i)``, is computed as the sum
 
 ```math
@@ -31,14 +31,14 @@ We store the prediction ``\\hat{y}(i)`` in position `i` of the pre-allocated vec
 
 ## Arguments
 - **`predictions`**: A pre-allocated vector in which to store the
-    prediction for the scalar value of the `driver` series.
-- **`i`**: The time index of the point of the `driver` series being
+    prediction for the scalar value of the `source` series.
+- **`i`**: The time index of the point of the `source` series being
     predicted. The prediction is stored in `predictions[i]`.
-- **`driver_values`**: Let ``t_1, t_2, \\ldots, t_{dim + 1}`` be
+- **`source_values`**: Let ``t_1, t_2, \\ldots, t_{dim + 1}`` be
     the time indices of
     the nearest neighbors to the delay embedding point with time
-    index `i`. `driver_values` contains the scalar values of the
-    `driver` series at those time indices.
+    index `i`. `source_values` contains the scalar values of the
+    `source` series at those time indices.
 - **`u`**: A pre-allocated vector of length `dim + 1` that holds the
     normalisation coefficients for computing the weights in the
     cross mapping algorithm.
@@ -55,7 +55,7 @@ Science (2012): 1227079.
 [http://science.sciencemag.org/content/early/2012/09/19/science.1227079](http://science.sciencemag.org/content/early/2012/09/19/science.1227079)
 
 """
-function predict_point!(predictions, i, driver_values, u, w, distances, dim)
+function predict_point!(predictions, i, source_values, u, w, distances, dim)
     if distances[1] == 0
         @warn "The first distance is zero. Will yield division by zero"
     end
@@ -68,7 +68,7 @@ function predict_point!(predictions, i, driver_values, u, w, distances, dim)
     predictions[i] = 0.0
     for j in 1:(dim + 1)
         #w[j] = u[j] / sum(u)
-        predictions[i] =+ sum((u[j] / sum(u)) .* driver_values)
+        predictions[i] =+ sum((u[j] / sum(u)) .* source_values)
     end
 end
 
@@ -111,7 +111,7 @@ end
 
 
 """
-    crossmap(driver, response;
+    crossmap(source, target;
         dim::Int = 3,
         τ::Int = 1,
         libsize::Int = 10,
@@ -126,20 +126,20 @@ end
         ν::Int = 0)
 
 ## Algorithm
-Compute the cross mapping between a `driver` series and a `response` series.
+Compute the cross mapping between a `source` series and a `target` series.
 
 ## Arguments
-- **`driver`**: The data series representing the putative driver process.
-- **`response`**: The data series representing the putative response process.
+- **`source`**: The data series representing the putative source process.
+- **`target`**: The data series representing the putative target process.
 - **`dim`**: The dimension of the state space reconstruction (delay embedding)
-    constructed from the `response` series. Default is `dim = 3`.
-- **`τ`**: The embedding lag for the delay embedding constructed from `response`.
+    constructed from the `target` series. Default is `dim = 3`.
+- **`τ`**: The embedding lag for the delay embedding constructed from `target`.
     Default is `τ = 1`.
-- **`ν`**: The prediction lag to use when predicting scalar values of `driver`
-    fromthe delay embedding of `response`.
-    `ν > 0` are forward lags (causal; `driver`'s past influences `response`'s future),
-    and `ν < 0` are backwards lags (non-causal; `driver`'s' future influences
-    `response`'s past). Adjust the prediction lag if you
+- **`ν`**: The prediction lag to use when predicting scalar values of `source`
+    fromthe delay embedding of `target`.
+    `ν > 0` are forward lags (causal; `source`'s past influences `target`'s future),
+    and `ν < 0` are backwards lags (non-causal; `source`'s' future influences
+    `target`'s past). Adjust the prediction lag if you
     want to performed lagged ccm
     [(Ye et al., 2015)](https://www.nature.com/articles/srep14750).
     Default is `ν = 0`, as in
@@ -152,17 +152,17 @@ Compute the cross mapping between a `driver` series and a `response` series.
     and look for nearest neighbours at each cross mapping realization (of which there
     are `n_reps`)?
 - **`n_reps`**: The number of times we draw a library of `libsize` points from the
-    delay embedding of `response` and try to predict `driver` values. Equivalently,
+    delay embedding of `target` and try to predict `source` values. Equivalently,
     how many times do we cross map for this value of `libsize`?
     Default is `n_reps = 100`.
 - **`replace`**: Sample delay embedding points with replacement? Default is `replace = true`.
 - **`exclusion_radius`**: How many temporal neighbors of the delay embedding
-    point `response_embedding(t)` to exclude when searching for neighbors to
-    determine weights for predicting the scalar point `driver(t + ν)`.
+    point `target_embedding(t)` to exclude when searching for neighbors to
+    determine weights for predicting the scalar point `source(t + ν)`.
     Default is `exclusion_radius = 0`.
 - **`which_is_surr`**: Which data series should be replaced by a surrogate
     realization of the type given by `surr_type`? Must be one of the
-    following: `:response`, `:driver`, `:none`, `:both`.
+    following: `:target`, `:source`, `:none`, `:both`.
     Default is `:none`.
 - **`surr_func`**: A valid surrogate function from TimeseriesSurrogates.jl.
 - **`tree_type`**: The type of tree to build when looking for nearest neighbors.
@@ -172,7 +172,7 @@ Compute the cross mapping between a `driver` series and a `response` series.
     `KDTree` only works with the axis aligned metrics `Euclidean`, `Chebyshev`,
     `Minkowski` and `Cityblock`. Default is `metric = Euclidean()` *(note the instantiation of the metric)*.
 - **`correspondence_measure`**: The function that computes the correspondence
-    between actual values of `driver` and predicted values. Can be any
+    between actual values of `source` and predicted values. Can be any
     function returning a similarity measure between two vectors of values.
     Default is `correspondence_measure = StatsBase.cor`, which returns values on ``[-1, 1]``.
     In this case, any negative values are usually filtered out (interpreted as zero coupling) and
@@ -192,11 +192,11 @@ Ye, Hao, et al. "Distinguishing time-delayed causal interactions using convergen
 Ye, H., et al. "rEDM: Applications of empirical dynamic modeling from time series." R Package Version 0.4 7 (2016).
 [https://cran.r-project.org/web/packages/rEDM/index.html](https://cran.r-project.org/web/packages/rEDM/index.html)
 """
-function crossmap(driver, response;
+function crossmap(source, target;
             dim::Int = 3,
             τ::Int = 1,
             ν::Int = 0,
-            libsize::Int = length(driver) - dim*τ - abs(ν),
+            libsize::Int = length(source) - dim*τ - abs(ν),
             n_reps::Int = 100,
             replace::Bool = true,
             exclusion_radius::Int = 0,
@@ -206,20 +206,20 @@ function crossmap(driver, response;
             tree_type = NearestNeighbors.KDTree,
             distance_metric = Distances.Euclidean(),
             correspondence_measure = StatsBase.cor)
-    points_available = length(response) - dim*τ
+    points_available = length(target) - dim*τ
      
     validate_exclusion_radius!(exclusion_radius, points_available)
     validate_embedding_params(dim, τ, points_available, exclusion_radius)
     validate_surr(which_is_surr, surr_func)
-    validate_libsize(libsize, driver, dim, τ, ν, replace)
+    validate_libsize(libsize, source, dim, τ, ν, replace)
 
-    if which_is_surr == :response
-        response = surr_func(response)
-    elseif which_is_surr == :driver
-        driver = surr_func(driver)
+    if which_is_surr == :target
+        target = surr_func(target)
+    elseif which_is_surr == :source
+        source = surr_func(source)
     elseif which_is_surr == :both
-        driver = surr_func(driver)
-        response = surr_func(response)
+        source = surr_func(source)
+        target = surr_func(target)
     end
 
     ######################################################################
@@ -230,7 +230,7 @@ function crossmap(driver, response;
     # smallest library sizes and number of repetitions.
     ######################################################################
     embedding_lags = collect(1:-τ:-(τ*dim - 1))
-    embedding = cembed([response], [1 for i in 1:dim], embedding_lags).points
+    embedding = cembed([target], [1 for i in 1:dim], embedding_lags).points
     n_embedding_pts = size(embedding, 2)
 
     validate_embedding!(embedding, jitter)
@@ -259,7 +259,7 @@ function crossmap(driver, response;
     point_idxs = zeros(Int32, libsize)
 
     # Pre-allocate vector to hold the correspondences between actual
-    # and predicted values of the driver time series.
+    # and predicted values of the source time series.
     correspondence = zeros(Float64, n_reps)
 
     for k in 1:n_reps
@@ -272,10 +272,10 @@ function crossmap(driver, response;
         # For every point selected at this repetition, make a prediction.
         @inbounds for i in 1:length(point_idxs)
             idx = point_idxs[i]
-            predict_point!(predictions, i, driver[nearest_idxs[idx]], u, w, nearest_dists[idx], dim)
+            predict_point!(predictions, i, source[nearest_idxs[idx]], u, w, nearest_dists[idx], dim)
         end
 
-        correspondence[k] = correspondence_measure(predictions, driver[point_idxs .- ν])
+        correspondence[k] = correspondence_measure(predictions, source[point_idxs .- ν])
     end
 
     return correspondence
