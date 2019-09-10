@@ -58,7 +58,7 @@
 	        @test_throws DomainError crossmap(x, y, surr_func = StatsBase.cor)
 	    end
 	    @testset "Which is surrogated" begin
-	        which_surr = [:none, :both, :driver, :response]
+	        which_surr = [:none, :both, :source, :target]
 	        [crossmap(x, y, which_is_surr = surr) for surr in which_surr]
 	        @test_throws DomainError crossmap(x, y, which_is_surr = :aksdj)
 	    end
