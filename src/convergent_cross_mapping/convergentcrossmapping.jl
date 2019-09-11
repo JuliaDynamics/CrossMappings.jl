@@ -30,16 +30,16 @@ different `timeseries_lengths` and return summary statistics of the results.
     constructed from the `target` series. Default is `dim = 3`.
 - **`τ`**: The embedding lag for the delay embedding constructed from `target`.
     Default is `τ = 1`.
-- **`ν`**: The prediction lag to use when predicting scalar values of `source`
+- **`η`**: The prediction lag to use when predicting scalar values of `source`
     from the delay embedding of `target`.
-    `ν > 0` are forward lags (causal; `source`'s past influences `target`'s future),
-    and `ν < 0` are backwards lags (non-causal; `source`'s' future influences
+    `η > 0` are forward lags (causal; `source`'s past influences `target`'s future),
+    and `η < 0` are backwards lags (non-causal; `source`'s' future influences
     `target`'s past). Adjust the prediction lag if you
     want to performed lagged ccm
     [(Ye et al., 2015)](https://www.nature.com/articles/srep14750).
-    Default is `ν = 0`, as in
+    Default is `η = 0`, as in
     [Sugihara et al. (2012)](http://science.sciencemag.org/content/early/2012/09/19/science.1227079).
-    *Note: The sign of the lag `ν` is organized to conform with the conventions in
+    *Note: The sign of the lag `η` is organized to conform with the conventions in
     [TransferEntropy.jl](), and is opposite to the convention used in the
     [`rEDM`](https://cran.r-project.org/web/packages/rEDM/index.html) package
     ([Ye et al., 2016](https://cran.r-project.org/web/packages/rEDM/index.html)).*
@@ -53,7 +53,7 @@ different `timeseries_lengths` and return summary statistics of the results.
 - **`replace`**: Sample delay embedding points with replacement? Default is `replace = true`.
 - **`exclusion_radius`**: How many temporal neighbors of the delay embedding
     point `target_embedding(t)` to exclude when searching for neighbors to
-    determine weights for predicting the scalar point `source(t + ν)`.
+    determine weights for predicting the scalar point `source(t + η)`.
     Default is `exclusion_radius = 0`.
 - **`which_is_surr`**: Which data series should be replaced by a surrogate
     realization of the type given by `surr_type`? Must be one of the
@@ -154,16 +154,16 @@ different `timeseries_lengths`.
     constructed from the `target` series. Default is `dim = 3`.
 - **`τ`**: The embedding lag for the delay embedding constructed from `target`.
     Default is `τ = 1`.
-- **`ν`**: The prediction lag to use when predicting scalar values of `source`
+- **`η`**: The prediction lag to use when predicting scalar values of `source`
     fromthe delay embedding of `target`.
-    `ν > 0` are forward lags (causal; `source`'s past influences `target`'s future),
-    and `ν < 0` are backwards lags (non-causal; `source`'s' future influences
+    `η > 0` are forward lags (causal; `source`'s past influences `target`'s future),
+    and `η < 0` are backwards lags (non-causal; `source`'s' future influences
     `target`'s past). Adjust the prediction lag if you
     want to performed lagged ccm
     [(Ye et al., 2015)](https://www.nature.com/articles/srep14750).
-    Default is `ν = 0`, as in
+    Default is `η = 0`, as in
     [Sugihara et al. (2012)](http://science.sciencemag.org/content/early/2012/09/19/science.1227079).
-    *Note: The sign of the lag `ν` is organized to conform with the conventions in
+    *Note: The sign of the lag `η` is organized to conform with the conventions in
     [TransferEntropy.jl](), and is opposite to the convention used in the
     [`rEDM`](https://cran.r-project.org/web/packages/rEDM/index.html) package
     ([Ye et al., 2016](https://cran.r-project.org/web/packages/rEDM/index.html)).*
@@ -177,7 +177,7 @@ different `timeseries_lengths`.
 - **`replace`**: Sample delay embedding points with replacement? Default is `replace = true`.
 - **`exclusion_radius`**: How many temporal neighbors of the delay embedding
     point `target_embedding(t)` to exclude when searching for neighbors to
-    determine weights for predicting the scalar point `source(t + ν)`.
+    determine weights for predicting the scalar point `source(t + η)`.
     Default is `exclusion_radius = 0`.
 - **`which_is_surr`**: Which data series should be replaced by a surrogate
     realization of the type given by `surr_type`? Must be one of the
@@ -256,16 +256,16 @@ If `summarise = false`, then call `ccm` (returns raw crossmap skills).
     constructed from the `target` series. Default is `dim = 3`.
 - **`τ`**: The embedding lag for the delay embedding constructed from `target`.
     Default is `τ = 1`.
-- **`ν`**: The prediction lag to use when predicting scalar values of `source`
+- **`η`**: The prediction lag to use when predicting scalar values of `source`
     fromthe delay embedding of `target`.
-    `ν > 0` are forward lags (causal; `source`'s past influences `target`'s future),
-    and `ν < 0` are backwards lags (non-causal; `source`'s' future influences
+    `η > 0` are forward lags (causal; `source`'s past influences `target`'s future),
+    and `η < 0` are backwards lags (non-causal; `source`'s' future influences
     `target`'s past). Adjust the prediction lag if you
     want to performed lagged ccm
     [(Ye et al., 2015)](https://www.nature.com/articles/srep14750).
-    Default is `ν = 0`, as in
+    Default is `η = 0`, as in
     [Sugihara et al. (2012)](http://science.sciencemag.org/content/early/2012/09/19/science.1227079).
-    *Note: The sign of the lag `ν` is organized to conform with the conventions in
+    *Note: The sign of the lag `η` is organized to conform with the conventions in
     [TransferEntropy.jl](), and is opposite to the convention used in the
     [`rEDM`](https://cran.r-project.org/web/packages/rEDM/index.html) package
     ([Ye et al., 2016](https://cran.r-project.org/web/packages/rEDM/index.html)).*
@@ -279,7 +279,7 @@ If `summarise = false`, then call `ccm` (returns raw crossmap skills).
 - **`replace`**: Sample delay embedding points with replacement? Default is `replace = true`.
 - **`exclusion_radius`**: How many temporal neighbors of the delay embedding
     point `target_embedding(t)` to exclude when searching for neighbors to
-    determine weights for predicting the scalar point `source(t + ν)`.
+    determine weights for predicting the scalar point `source(t + η)`.
     Default is `exclusion_radius = 0`.
 - **`which_is_surr`**: Which data series should be replaced by a surrogate
     realization of the type given by `surr_type`? Must be one of the

@@ -1,5 +1,5 @@
-function validate_libsize(libsize, source, dim, τ, ν, replace)
-    n_available_pts = length(source) - dim*τ - abs(ν)
+function validate_libsize(libsize, source, dim, τ, η, replace)
+    n_available_pts = length(source) - dim*τ - abs(η)
     if libsize > n_available_pts
         if replace
             #@warn "libsize = $libsize > n_available_pts = $n_available_pts. Sampling with replacement."

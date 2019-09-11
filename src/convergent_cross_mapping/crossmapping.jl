@@ -123,7 +123,7 @@ end
         tree_type = NearestNeighbors.KDTree,
         distance_metric = Distances.Euclidean(),
         correspondence_measure = StatsBase.cor,
-        ν::Int = 0)
+        η::Int = 0)
 
 ## Algorithm
 Compute the cross mapping between a `source` series and a `target` series.
@@ -135,16 +135,16 @@ Compute the cross mapping between a `source` series and a `target` series.
     constructed from the `target` series. Default is `dim = 3`.
 - **`τ`**: The embedding lag for the delay embedding constructed from `target`.
     Default is `τ = 1`.
-- **`ν`**: The prediction lag to use when predicting scalar values of `source`
+- **`η`**: The prediction lag to use when predicting scalar values of `source`
     fromthe delay embedding of `target`.
-    `ν > 0` are forward lags (causal; `source`'s past influences `target`'s future),
-    and `ν < 0` are backwards lags (non-causal; `source`'s' future influences
+    `η > 0` are forward lags (causal; `source`'s past influences `target`'s future),
+    and `η < 0` are backwards lags (non-causal; `source`'s' future influences
     `target`'s past). Adjust the prediction lag if you
     want to performed lagged ccm
     [(Ye et al., 2015)](https://www.nature.com/articles/srep14750).
-    Default is `ν = 0`, as in
+    Default is `η = 0`, as in
     [Sugihara et al. (2012)](http://science.sciencemag.org/content/early/2012/09/19/science.1227079).
-    *Note: The sign of the lag `ν` is organized to conform with the conventions in
+    *Note: The sign of the lag `η` is organized to conform with the conventions in
     [TransferEntropy.jl](), and is opposite to the convention used in the
     [`rEDM`](https://cran.r-project.org/web/packages/rEDM/index.html) package
     ([Ye et al., 2016](https://cran.r-project.org/web/packages/rEDM/index.html)).*
@@ -158,7 +158,7 @@ Compute the cross mapping between a `source` series and a `target` series.
 - **`replace`**: Sample delay embedding points with replacement? Default is `replace = true`.
 - **`exclusion_radius`**: How many temporal neighbors of the delay embedding
     point `target_embedding(t)` to exclude when searching for neighbors to
-    determine weights for predicting the scalar point `source(t + ν)`.
+    determine weights for predicting the scalar point `source(t + η)`.
     Default is `exclusion_radius = 0`.
 - **`which_is_surr`**: Which data series should be replaced by a surrogate
     realization of the type given by `surr_type`? Must be one of the
@@ -195,8 +195,8 @@ Ye, H., et al. "rEDM: Applications of empirical dynamic modeling from time serie
 function crossmap(source, target;
             dim::Int = 3,
             τ::Int = 1,
-            ν::Int = 0,
-            libsize::Int = length(source) - dim*τ - abs(ν),
+            η::Int = 0,
+            libsize::Int = length(source) - dim*τ - abs(η),
             n_reps::Int = 100,
             replace::Bool = true,
             exclusion_radius::Int = 0,
@@ -211,7 +211,7 @@ function crossmap(source, target;
     validate_exclusion_radius!(exclusion_radius, points_available)
     validate_embedding_params(dim, τ, points_available, exclusion_radius)
     validate_surr(which_is_surr, surr_func)
-    validate_libsize(libsize, source, dim, τ, ν, replace)
+    validate_libsize(libsize, source, dim, τ, η, replace)
 
     if which_is_surr == :target
         target = surr_func(target)
@@ -263,10 +263,10 @@ function crossmap(source, target;
     correspondence = zeros(Float64, n_reps)
 
     for k in 1:n_reps
-        if ν >= 0
-            sample!((1 + ν):n_embedding_pts, point_idxs, replace = replace)
+        if η >= 0
+            sample!((1 + η):n_embedding_pts, point_idxs, replace = replace)
         else
-            sample!(1:(n_embedding_pts - abs(ν)), point_idxs, replace = replace)
+            sample!(1:(n_embedding_pts - abs(η)), point_idxs, replace = replace)
         end
 
         # For every point selected at this repetition, make a prediction.
@@ -275,7 +275,7 @@ function crossmap(source, target;
             predict_point!(predictions, i, source[nearest_idxs[idx]], u, w, nearest_dists[idx], dim)
         end
 
-        correspondence[k] = correspondence_measure(predictions, source[point_idxs .- ν])
+        correspondence[k] = correspondence_measure(predictions, source[point_idxs .- η])
     end
 
     return correspondence

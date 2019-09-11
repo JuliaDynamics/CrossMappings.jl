@@ -20,10 +20,10 @@
 
 	@testset "Prediction lags" begin
 	    x, y = rand(100), rand(100)
-	    crossmap(x, y, ν = 1)
-	    crossmap(x, y, ν = -1)
-	    crossmap(x, y, ν = 5)
-	    crossmap(x, y, ν = -5)
+	    crossmap(x, y, η = 1)
+	    crossmap(x, y, η = -1)
+	    crossmap(x, y, η = 5)
+	    crossmap(x, y, η = -5)
 	end
 
 	@testset "Embedding params" begin
