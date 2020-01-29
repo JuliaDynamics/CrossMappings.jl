@@ -117,8 +117,6 @@ end
         libsize::Int = 10,
         replace::Bool = false,
         n_reps::Int = 100,
-        surr_func::Function = randomshuffle,
-        which_is_surr::Symbol = :none,
         exclusion_radius::Int = 0,
         tree_type = NearestNeighbors.KDTree,
         distance_metric = Distances.Euclidean(),
@@ -126,9 +124,11 @@ end
         η::Int = 0)
 
 ## Algorithm
+
 Compute the cross mapping between a `source` series and a `target` series.
 
 ## Arguments
+
 - **`source`**: The data series representing the putative source process.
 - **`target`**: The data series representing the putative target process.
 - **`dim`**: The dimension of the state space reconstruction (delay embedding)
@@ -160,11 +160,6 @@ Compute the cross mapping between a `source` series and a `target` series.
     point `target_embedding(t)` to exclude when searching for neighbors to
     determine weights for predicting the scalar point `source(t + η)`.
     Default is `exclusion_radius = 0`.
-- **`which_is_surr`**: Which data series should be replaced by a surrogate
-    realization of the type given by `surr_type`? Must be one of the
-    following: `:target`, `:source`, `:none`, `:both`.
-    Default is `:none`.
-- **`surr_func`**: A valid surrogate function from TimeseriesSurrogates.jl.
 - **`tree_type`**: The type of tree to build when looking for nearest neighbors.
     Must be a tree type from NearestNeighbors.jl. For now, this is either
     `BruteTree`, `KDTree` or `BallTree`.
@@ -182,6 +177,7 @@ Compute the cross mapping between a `source` series and a `target` series.
     be perfect prediction.
 
 ## References
+
 Sugihara, George, et al. "Detecting causality in complex ecosystems."
 Science (2012): 1227079.
 [http://science.sciencemag.org/content/early/2012/09/19/science.1227079](http://science.sciencemag.org/content/early/2012/09/19/science.1227079)
@@ -201,8 +197,6 @@ function crossmap(source, target;
             replace::Bool = true,
             exclusion_radius::Int = 0,
             jitter::Float64 = 1e-3,
-            which_is_surr::Symbol = :none,
-            surr_func::Function = randomshuffle,
             tree_type = NearestNeighbors.KDTree,
             distance_metric = Distances.Euclidean(),
             correspondence_measure = StatsBase.cor)
@@ -210,17 +204,7 @@ function crossmap(source, target;
      
     validate_exclusion_radius!(exclusion_radius, points_available)
     validate_embedding_params(dim, τ, points_available, exclusion_radius)
-    validate_surr(which_is_surr, surr_func)
     validate_libsize(libsize, source, dim, τ, η, replace)
-
-    if which_is_surr == :target
-        target = surr_func(target)
-    elseif which_is_surr == :source
-        source = surr_func(source)
-    elseif which_is_surr == :both
-        source = surr_func(source)
-        target = surr_func(target)
-    end
 
     ######################################################################
     # Embedding and the nearest neighbor search.

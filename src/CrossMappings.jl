@@ -2,7 +2,6 @@ module CrossMappings
 
 using Distances
 using NearestNeighbors
-using TimeseriesSurrogates
 using StateSpaceReconstruction
 using Statistics
 using Distributions
