@@ -55,11 +55,6 @@ different `timeseries_lengths` and return summary statistics of the results.
     point `target_embedding(t)` to exclude when searching for neighbors to
     determine weights for predicting the scalar point `source(t + η)`.
     Default is `exclusion_radius = 0`.
-- **`which_is_surr`**: Which data series should be replaced by a surrogate
-    realization of the type given by `surr_type`? Must be one of the
-    following: `:target`, `:source`, `:none`, `:both`.
-    Default is `:none`.
-- **`surr_func`**: A valid surrogate function from TimeseriesSurrogates.jl.
 - **`tree_type`**: The type of tree to build when looking for nearest neighbors.
     Must be a tree type from NearestNeighbors.jl. For now, this is either
     `BruteTree`, `KDTree` or `BallTree`.
@@ -179,11 +174,6 @@ different `timeseries_lengths`.
     point `target_embedding(t)` to exclude when searching for neighbors to
     determine weights for predicting the scalar point `source(t + η)`.
     Default is `exclusion_radius = 0`.
-- **`which_is_surr`**: Which data series should be replaced by a surrogate
-    realization of the type given by `surr_type`? Must be one of the
-    following: `:target`, `:source`, `:none`, `:both`.
-    Default is `:none`.
-- **`surr_func`**: A valid surrogate function from TimeseriesSurrogates.jl.
 - **`tree_type`**: The type of tree to build when looking for nearest neighbors.
     Must be a tree type from NearestNeighbors.jl. For now, this is either
     `BruteTree`, `KDTree` or `BallTree`.
@@ -281,11 +271,6 @@ If `summarise = false`, then call `ccm` (returns raw crossmap skills).
     point `target_embedding(t)` to exclude when searching for neighbors to
     determine weights for predicting the scalar point `source(t + η)`.
     Default is `exclusion_radius = 0`.
-- **`which_is_surr`**: Which data series should be replaced by a surrogate
-    realization of the type given by `surr_type`? Must be one of the
-    following: `:target`, `:source`, `:none`, `:both`.
-    Default is `:none`.
-- **`surr_func`**: A valid surrogate function from TimeseriesSurrogates.jl.
 - **`tree_type`**: The type of tree to build when looking for nearest neighbors.
     Must be a tree type from NearestNeighbors.jl. For now, this is either
     `BruteTree`, `KDTree` or `BallTree`.

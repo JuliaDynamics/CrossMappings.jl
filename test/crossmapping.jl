@@ -46,24 +46,6 @@
 	    crossmap(x, y, replace = true)
 	end
 
-	@testset "Surrogates" begin
-    x, y = rand(100), rand(100)
-	    @testset "Surrogate types" begin
-	        surrogate_funcs = [TimeseriesSurrogates.randomshuffle,
-	                            TimeseriesSurrogates.randomphases,
-	                            TimeseriesSurrogates.randomamplitudes,
-	                            TimeseriesSurrogates.aaft,
-	                            TimeseriesSurrogates.iaaft]
-	        [crossmap(x, y, surr_func = surr_func) for surr_func in surrogate_funcs]
-	        @test_throws DomainError crossmap(x, y, surr_func = StatsBase.cor)
-	    end
-	    @testset "Which is surrogated" begin
-	        which_surr = [:none, :both, :source, :target]
-	        [crossmap(x, y, which_is_surr = surr) for surr in which_surr]
-	        @test_throws DomainError crossmap(x, y, which_is_surr = :aksdj)
-	    end
-	end
-
 	@testset "Correspondence measures" begin
 	    @testset "$i" for i in 1:100
 	        x, y = rand(100), rand(100)

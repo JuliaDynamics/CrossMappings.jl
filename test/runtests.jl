@@ -7,7 +7,6 @@ using Test
 using StatsBase
 using Distances
 using NearestNeighbors
-using TimeseriesSurrogates
 using StateSpaceReconstruction
 
 include("crossmapping.jl")

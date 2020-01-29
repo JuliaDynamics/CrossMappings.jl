@@ -51,22 +51,6 @@ function validate_embedding_params(dim, τ, points_available, exclusion_radius)
     end
 end
 
-
-function validate_surr(which_is_surr, surr_func)
-    if surr_func ∉ [TimeseriesSurrogates.randomshuffle,
-                    TimeseriesSurrogates.randomphases,
-                    TimeseriesSurrogates.randomamplitudes,
-                    TimeseriesSurrogates.aaft,
-                    TimeseriesSurrogates.iaaft]
-        throw(DomainError(surr_func, "surr_func = $surr_func is not a valid surrogate function from TimeseriesSurrogates.jl." ))
-    end
-
-    if which_is_surr ∉ [:target, :source, :none, :both]
-        throw(DomainError(which_is_surr, "which_is_surr = $which_is_surr is invalid. Must be either :target, :source, :none or :both"))
-    end
-end
-
-
 function validate_uncertainty_measure(uncertainty_measure)
     if uncertainty_measure ∉ [:quantile, :std, :none]
         throw(DomainError(uncertainty_measure, "uncertainty_measure = $uncertainty_measure is invalid. Must be either :quantile, :std or :none."))
@@ -88,7 +72,6 @@ function validate_output_selection(average_measure, uncertainty_measure, summari
 end
 
 export
-validate_surr,
 validate_libsize,
 validate_embedding!,
 validate_embedding_params,
