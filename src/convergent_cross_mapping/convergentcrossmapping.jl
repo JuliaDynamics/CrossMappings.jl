@@ -1,6 +1,6 @@
 """
-    ccm_with_summary(driver,
-            response,
+    ccm_with_summary(source,
+            target,
             timeseries_lengths;
             average_measure::Symbol = :median,
             uncertainty_measure::Symbol = :quantile,
@@ -8,12 +8,13 @@
             kwargs...)
 
 ## Algorithm
-Compute the cross mapping between a `driver` series and a `response` series over
+
+Compute the cross mapping between a `source` series and a `target` series over
 different `timeseries_lengths` and return summary statistics of the results.
 
 ## Arguments
-- **`driver`**: The data series representing the putative driver process. 
-- **`response`**: The data series representing the putative response process.
+- **`source`**: The data series representing the putative source process. 
+- **`target`**: The data series representing the putative target process.
 - **`timeseries_lengths`**: Time series length(s) for which to compute the
     cross mapping(s).
 
@@ -26,19 +27,19 @@ different `timeseries_lengths` and return summary statistics of the results.
 
 ## Keyword arguments to `crossmap`
 - **`dim`**: The dimension of the state space reconstruction (delay embedding)
-    constructed from the `response` series. Default is `dim = 3`.
-- **`τ`**: The embedding lag for the delay embedding constructed from `response`.
+    constructed from the `target` series. Default is `dim = 3`.
+- **`τ`**: The embedding lag for the delay embedding constructed from `target`.
     Default is `τ = 1`.
-- **`ν`**: The prediction lag to use when predicting scalar values of `driver`
-    fromthe delay embedding of `response`.
-    `ν > 0` are forward lags (causal; `driver`'s past influences `response`'s future),
-    and `ν < 0` are backwards lags (non-causal; `driver`'s' future influences
-    `response`'s past). Adjust the prediction lag if you
+- **`η`**: The prediction lag to use when predicting scalar values of `source`
+    from the delay embedding of `target`.
+    `η > 0` are forward lags (causal; `source`'s past influences `target`'s future),
+    and `η < 0` are backwards lags (non-causal; `source`'s' future influences
+    `target`'s past). Adjust the prediction lag if you
     want to performed lagged ccm
     [(Ye et al., 2015)](https://www.nature.com/articles/srep14750).
-    Default is `ν = 0`, as in
+    Default is `η = 0`, as in
     [Sugihara et al. (2012)](http://science.sciencemag.org/content/early/2012/09/19/science.1227079).
-    *Note: The sign of the lag `ν` is organized to conform with the conventions in
+    *Note: The sign of the lag `η` is organized to conform with the conventions in
     [TransferEntropy.jl](), and is opposite to the convention used in the
     [`rEDM`](https://cran.r-project.org/web/packages/rEDM/index.html) package
     ([Ye et al., 2016](https://cran.r-project.org/web/packages/rEDM/index.html)).*
@@ -46,17 +47,17 @@ different `timeseries_lengths` and return summary statistics of the results.
     and look for nearest neighbours at each cross mapping realization (of which there
     are `n_reps`)?
 - **`n_reps`**: The number of times we draw a library of `libsize` points from the
-    delay embedding of `response` and try to predict `driver` values. Equivalently,
+    delay embedding of `target` and try to predict `source` values. Equivalently,
     how many times do we cross map for this value of `libsize`?
     Default is `n_reps = 100`.
 - **`replace`**: Sample delay embedding points with replacement? Default is `replace = true`.
 - **`exclusion_radius`**: How many temporal neighbors of the delay embedding
-    point `response_embedding(t)` to exclude when searching for neighbors to
-    determine weights for predicting the scalar point `driver(t + ν)`.
+    point `target_embedding(t)` to exclude when searching for neighbors to
+    determine weights for predicting the scalar point `source(t + η)`.
     Default is `exclusion_radius = 0`.
 - **`which_is_surr`**: Which data series should be replaced by a surrogate
     realization of the type given by `surr_type`? Must be one of the
-    following: `:response`, `:driver`, `:none`, `:both`.
+    following: `:target`, `:source`, `:none`, `:both`.
     Default is `:none`.
 - **`surr_func`**: A valid surrogate function from TimeseriesSurrogates.jl.
 - **`tree_type`**: The type of tree to build when looking for nearest neighbors.
@@ -66,7 +67,7 @@ different `timeseries_lengths` and return summary statistics of the results.
     `KDTree` only works with the axis aligned metrics `Euclidean`, `Chebyshev`,
     `Minkowski` and `Cityblock`. Default is `metric = Euclidean()` *(note the instantiation of the metric)*.
 - **`correspondence_measure`**: The function that computes the correspondence
-    between actual values of `driver` and predicted values. Can be any
+    between actual values of `source` and predicted values. Can be any
     function returning a similarity measure between two vectors of values.
     Default is `correspondence_measure = StatsBase.cor`, which returns values on ``[-1, 1]``.
     In this case, any negative values are usually filtered out (interpreted as zero coupling) and
@@ -86,8 +87,8 @@ Ye, Hao, et al. "Distinguishing time-delayed causal interactions using convergen
 Ye, H., et al. "rEDM: Applications of empirical dynamic modeling from time series." R Package Version 0.4 7 (2016).
 [https://cran.r-project.org/web/packages/rEDM/index.html](https://cran.r-project.org/web/packages/rEDM/index.html)
 """
-function ccm_with_summary(driver,
-            response,
+function ccm_with_summary(source,
+            target,
             timeseries_lengths;
             average_measure::Symbol = :median,
             uncertainty_measure::Symbol = :quantile,
@@ -105,7 +106,7 @@ function ccm_with_summary(driver,
         end
 
         for (i, ts_len) in enumerate(timeseries_lengths)
-            correlations = crossmap(driver[1:ts_len], response[1:ts_len]; kwargs...)
+            correlations = crossmap(source[1:ts_len], target[1:ts_len]; kwargs...)
 
             if average_measure == :mean
                 average[i] = mean(correlations)
@@ -133,36 +134,36 @@ end
 
 
 """
-    ccm(driver,
-            response,
+    ccm(source,
+            target,
             timeseries_lengths;
             kwargs...) -> Vector{Vector{Float64}}
 
 ## Algorithm
-Compute the cross mapping between a `driver` series and a `response` series over
+Compute the cross mapping between a `source` series and a `target` series over
 different `timeseries_lengths`.
 
 ## Arguments
-- **`driver`**: The data series representing the putative driver process.
-- **`response`**: The data series representing the putative response process.
+- **`source`**: The data series representing the putative source process.
+- **`target`**: The data series representing the putative target process.
 - **`timeseries_lengths`**: Time series length(s) for which to compute the
     cross mapping(s).
 
 ## Keyword arguments to `crossmap`
 - **`dim`**: The dimension of the state space reconstruction (delay embedding)
-    constructed from the `response` series. Default is `dim = 3`.
-- **`τ`**: The embedding lag for the delay embedding constructed from `response`.
+    constructed from the `target` series. Default is `dim = 3`.
+- **`τ`**: The embedding lag for the delay embedding constructed from `target`.
     Default is `τ = 1`.
-- **`ν`**: The prediction lag to use when predicting scalar values of `driver`
-    fromthe delay embedding of `response`.
-    `ν > 0` are forward lags (causal; `driver`'s past influences `response`'s future),
-    and `ν < 0` are backwards lags (non-causal; `driver`'s' future influences
-    `response`'s past). Adjust the prediction lag if you
+- **`η`**: The prediction lag to use when predicting scalar values of `source`
+    fromthe delay embedding of `target`.
+    `η > 0` are forward lags (causal; `source`'s past influences `target`'s future),
+    and `η < 0` are backwards lags (non-causal; `source`'s' future influences
+    `target`'s past). Adjust the prediction lag if you
     want to performed lagged ccm
     [(Ye et al., 2015)](https://www.nature.com/articles/srep14750).
-    Default is `ν = 0`, as in
+    Default is `η = 0`, as in
     [Sugihara et al. (2012)](http://science.sciencemag.org/content/early/2012/09/19/science.1227079).
-    *Note: The sign of the lag `ν` is organized to conform with the conventions in
+    *Note: The sign of the lag `η` is organized to conform with the conventions in
     [TransferEntropy.jl](), and is opposite to the convention used in the
     [`rEDM`](https://cran.r-project.org/web/packages/rEDM/index.html) package
     ([Ye et al., 2016](https://cran.r-project.org/web/packages/rEDM/index.html)).*
@@ -170,17 +171,17 @@ different `timeseries_lengths`.
     and look for nearest neighbours at each cross mapping realization (of which there
     are `n_reps`)?
 - **`n_reps`**: The number of times we draw a library of `libsize` points from the
-    delay embedding of `response` and try to predict `driver` values. Equivalently,
+    delay embedding of `target` and try to predict `source` values. Equivalently,
     how many times do we cross map for this value of `libsize`?
     Default is `n_reps = 100`.
 - **`replace`**: Sample delay embedding points with replacement? Default is `replace = true`.
 - **`exclusion_radius`**: How many temporal neighbors of the delay embedding
-    point `response_embedding(t)` to exclude when searching for neighbors to
-    determine weights for predicting the scalar point `driver(t + ν)`.
+    point `target_embedding(t)` to exclude when searching for neighbors to
+    determine weights for predicting the scalar point `source(t + η)`.
     Default is `exclusion_radius = 0`.
 - **`which_is_surr`**: Which data series should be replaced by a surrogate
     realization of the type given by `surr_type`? Must be one of the
-    following: `:response`, `:driver`, `:none`, `:both`.
+    following: `:target`, `:source`, `:none`, `:both`.
     Default is `:none`.
 - **`surr_func`**: A valid surrogate function from TimeseriesSurrogates.jl.
 - **`tree_type`**: The type of tree to build when looking for nearest neighbors.
@@ -190,7 +191,7 @@ different `timeseries_lengths`.
     `KDTree` only works with the axis aligned metrics `Euclidean`, `Chebyshev`,
     `Minkowski` and `Cityblock`. Default is `metric = Euclidean()` *(note the instantiation of the metric)*.
 - **`correspondence_measure`**: The function that computes the correspondence
-    between actual values of `driver` and predicted values. Can be any
+    between actual values of `source` and predicted values. Can be any
     function returning a similarity measure between two vectors of values.
     Default is `correspondence_measure = StatsBase.cor`, which returns values on ``[-1, 1]``.
     In this case, any negative values are usually filtered out (interpreted as zero coupling) and
@@ -210,19 +211,19 @@ Ye, Hao, et al. "Distinguishing time-delayed causal interactions using convergen
 Ye, H., et al. "rEDM: Applications of empirical dynamic modeling from time series." R Package Version 0.4 7 (2016).
 [https://cran.r-project.org/web/packages/rEDM/index.html](https://cran.r-project.org/web/packages/rEDM/index.html)
 """
-function ccm(driver,
-            response,
+function ccm(source,
+            target,
             timeseries_lengths;
             kwargs...)
 
-    [crossmap(driver[1:ts_len], response[1:ts_len]; kwargs...)
+    [crossmap(source[1:ts_len], target[1:ts_len]; kwargs...)
             for ts_len in timeseries_lengths]
 end
 
 
 """
-    convergentcrossmap(driver,
-            response,
+    convergentcrossmap(source,
+            target,
             timeseries_lengths;
             summarise::Bool = true,
             average_measure::Symbol = :median,
@@ -231,13 +232,13 @@ end
             kwargs...)
 
 ## Algorithm
-Compute the cross mapping between a `driver` series and a `response` series over
+Compute the cross mapping between a `source` series and a `target` series over
 different `timeseries_lengths`. If `summarise = true`, then call `ccm_with_summary`.
 If `summarise = false`, then call `ccm` (returns raw crossmap skills).
 
 ## Arguments
-- **`driver`**: The data series representing the putative driver process.
-- **`response`**: The data series representing the putative response process.
+- **`source`**: The data series representing the putative source process.
+- **`target`**: The data series representing the putative target process.
 - **`timeseries_lengths`**: Time series length(s) for which to compute the
     cross mapping(s).
 
@@ -252,19 +253,19 @@ If `summarise = false`, then call `ccm` (returns raw crossmap skills).
 
 ## Keyword arguments to `crossmap`
 - **`dim`**: The dimension of the state space reconstruction (delay embedding)
-    constructed from the `response` series. Default is `dim = 3`.
-- **`τ`**: The embedding lag for the delay embedding constructed from `response`.
+    constructed from the `target` series. Default is `dim = 3`.
+- **`τ`**: The embedding lag for the delay embedding constructed from `target`.
     Default is `τ = 1`.
-- **`ν`**: The prediction lag to use when predicting scalar values of `driver`
-    fromthe delay embedding of `response`.
-    `ν > 0` are forward lags (causal; `driver`'s past influences `response`'s future),
-    and `ν < 0` are backwards lags (non-causal; `driver`'s' future influences
-    `response`'s past). Adjust the prediction lag if you
+- **`η`**: The prediction lag to use when predicting scalar values of `source`
+    fromthe delay embedding of `target`.
+    `η > 0` are forward lags (causal; `source`'s past influences `target`'s future),
+    and `η < 0` are backwards lags (non-causal; `source`'s' future influences
+    `target`'s past). Adjust the prediction lag if you
     want to performed lagged ccm
     [(Ye et al., 2015)](https://www.nature.com/articles/srep14750).
-    Default is `ν = 0`, as in
+    Default is `η = 0`, as in
     [Sugihara et al. (2012)](http://science.sciencemag.org/content/early/2012/09/19/science.1227079).
-    *Note: The sign of the lag `ν` is organized to conform with the conventions in
+    *Note: The sign of the lag `η` is organized to conform with the conventions in
     [TransferEntropy.jl](), and is opposite to the convention used in the
     [`rEDM`](https://cran.r-project.org/web/packages/rEDM/index.html) package
     ([Ye et al., 2016](https://cran.r-project.org/web/packages/rEDM/index.html)).*
@@ -272,17 +273,17 @@ If `summarise = false`, then call `ccm` (returns raw crossmap skills).
     and look for nearest neighbours at each cross mapping realization (of which there
     are `n_reps`)?
 - **`n_reps`**: The number of times we draw a library of `libsize` points from the
-    delay embedding of `response` and try to predict `driver` values. Equivalently,
+    delay embedding of `target` and try to predict `source` values. Equivalently,
     how many times do we cross map for this value of `libsize`?
     Default is `n_reps = 100`.
 - **`replace`**: Sample delay embedding points with replacement? Default is `replace = true`.
 - **`exclusion_radius`**: How many temporal neighbors of the delay embedding
-    point `response_embedding(t)` to exclude when searching for neighbors to
-    determine weights for predicting the scalar point `driver(t + ν)`.
+    point `target_embedding(t)` to exclude when searching for neighbors to
+    determine weights for predicting the scalar point `source(t + η)`.
     Default is `exclusion_radius = 0`.
 - **`which_is_surr`**: Which data series should be replaced by a surrogate
     realization of the type given by `surr_type`? Must be one of the
-    following: `:response`, `:driver`, `:none`, `:both`.
+    following: `:target`, `:source`, `:none`, `:both`.
     Default is `:none`.
 - **`surr_func`**: A valid surrogate function from TimeseriesSurrogates.jl.
 - **`tree_type`**: The type of tree to build when looking for nearest neighbors.
@@ -292,7 +293,7 @@ If `summarise = false`, then call `ccm` (returns raw crossmap skills).
     `KDTree` only works with the axis aligned metrics `Euclidean`, `Chebyshev`,
     `Minkowski` and `Cityblock`. Default is `metric = Euclidean()` *(note the instantiation of the metric)*.
 - **`correspondence_measure`**: The function that computes the correspondence
-    between actual values of `driver` and predicted values. Can be any
+    between actual values of `source` and predicted values. Can be any
     function returning a similarity measure between two vectors of values.
     Default is `correspondence_measure = StatsBase.cor`, which returns values on ``[-1, 1]``.
     In this case, any negative values are usually filtered out (interpreted as zero coupling) and
@@ -312,8 +313,8 @@ Ye, Hao, et al. "Distinguishing time-delayed causal interactions using convergen
 Ye, H., et al. "rEDM: Applications of empirical dynamic modeling from time series." R Package Version 0.4 7 (2016).
 [https://cran.r-project.org/web/packages/rEDM/index.html](https://cran.r-project.org/web/packages/rEDM/index.html)
 """
-function convergentcrossmap(driver,
-            response,
+function convergentcrossmap(source,
+            target,
             timeseries_lengths;
             summarise::Bool = true,
             average_measure::Symbol = :median,
@@ -326,16 +327,16 @@ function convergentcrossmap(driver,
     validate_output_selection(average_measure, uncertainty_measure, summarise)
 
     if summarise
-        ccm_with_summary(driver,
-            response,
+        ccm_with_summary(source,
+            target,
             timeseries_lengths;
             average_measure = average_measure,
             uncertainty_measure = uncertainty_measure,
             quantiles = quantiles,
             kwargs...)
     else
-        ccm(driver,
-            response,
+        ccm(source,
+            target,
             timeseries_lengths;
             kwargs...)
     end

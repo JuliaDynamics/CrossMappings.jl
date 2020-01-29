@@ -20,10 +20,10 @@
 
 	@testset "Prediction lags" begin
 	    x, y = rand(100), rand(100)
-	    crossmap(x, y, ν = 1)
-	    crossmap(x, y, ν = -1)
-	    crossmap(x, y, ν = 5)
-	    crossmap(x, y, ν = -5)
+	    crossmap(x, y, η = 1)
+	    crossmap(x, y, η = -1)
+	    crossmap(x, y, η = 5)
+	    crossmap(x, y, η = -5)
 	end
 
 	@testset "Embedding params" begin
@@ -58,7 +58,7 @@
 	        @test_throws DomainError crossmap(x, y, surr_func = StatsBase.cor)
 	    end
 	    @testset "Which is surrogated" begin
-	        which_surr = [:none, :both, :driver, :response]
+	        which_surr = [:none, :both, :source, :target]
 	        [crossmap(x, y, which_is_surr = surr) for surr in which_surr]
 	        @test_throws DomainError crossmap(x, y, which_is_surr = :aksdj)
 	    end
