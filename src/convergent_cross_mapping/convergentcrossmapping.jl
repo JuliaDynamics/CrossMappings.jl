@@ -1,3 +1,5 @@
+using StatsBase
+
 """
     ccm_with_summary(source,
             target,
@@ -104,17 +106,17 @@ function ccm_with_summary(source,
             correlations = crossmap(source[1:ts_len], target[1:ts_len]; kwargs...)
 
             if average_measure == :mean
-                average[i] = mean(correlations)
+                average[i] = StatsBase.mean(correlations)
             elseif average_measure == :median
-                average[i] = median(correlations)
+                average[i] = StatsBase.median(correlations)
             end
 
             if uncertainty_measure == :quantile
                 for (j, quant) in enumerate(quantiles)
-                    uncertainties[i, j] = quantile(correlations, quant)
+                    uncertainties[i, j] = StatsBase.quantile(correlations, quant)
                 end
             elseif uncertainty_measure == :std
-                uncertainties[i] = std(correlations)
+                uncertainties[i] = StatsBase.std(correlations)
             end
         end
 
@@ -215,7 +217,7 @@ end
     convergentcrossmap(source,
             target,
             timeseries_lengths;
-            summarise::Bool = true,
+            summarise::Bool = false,
             average_measure::Symbol = :median,
             uncertainty_measure::Symbol = :quantile,
             quantiles = [0.327, 0.673],
@@ -301,7 +303,7 @@ Ye, H., et al. "rEDM: Applications of empirical dynamic modeling from time serie
 function convergentcrossmap(source,
             target,
             timeseries_lengths;
-            summarise::Bool = true,
+            summarise::Bool = false,
             average_measure::Symbol = :median,
             uncertainty_measure::Symbol = :quantile,
             quantiles = [0.327, 0.673],

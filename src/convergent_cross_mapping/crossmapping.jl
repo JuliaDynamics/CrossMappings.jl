@@ -1,4 +1,7 @@
-import StateSpaceReconstruction: cembed
+using StatsBase
+import DelayEmbeddings
+import NearestNeighbors
+import Distances
 
 """
     predict_point!(predictions, i, source_values, u, w, dists, dim)
@@ -113,7 +116,7 @@ end
 """
     crossmap(source, target;
         dim::Int = 3,
-        τ::Int = 1,
+        τ::Int = -1,
         libsize::Int = 10,
         replace::Bool = false,
         n_reps::Int = 100,
@@ -134,7 +137,7 @@ Compute the cross mapping between a `source` series and a `target` series.
 - **`dim`**: The dimension of the state space reconstruction (delay embedding)
     constructed from the `target` series. Default is `dim = 3`.
 - **`τ`**: The embedding lag for the delay embedding constructed from `target`.
-    Default is `τ = 1`.
+    Default is `τ = -1`. Must be a negative lag or a collection of negative lags.
 - **`η`**: The prediction lag to use when predicting scalar values of `source`
     fromthe delay embedding of `target`.
     `η > 0` are forward lags (causal; `source`'s past influences `target`'s future),
@@ -190,7 +193,7 @@ Ye, H., et al. "rEDM: Applications of empirical dynamic modeling from time serie
 """
 function crossmap(source, target;
             dim::Int = 3,
-            τ::Int = 1,
+            τ = -1,
             η::Int = 0,
             libsize::Int = length(source) - dim*τ - abs(η),
             n_reps::Int = 100,
@@ -200,12 +203,13 @@ function crossmap(source, target;
             tree_type = NearestNeighbors.KDTree,
             distance_metric = Distances.Euclidean(),
             correspondence_measure = StatsBase.cor)
-    points_available = length(target) - dim*τ
-     
-    validate_exclusion_radius!(exclusion_radius, points_available)
-    validate_embedding_params(dim, τ, points_available, exclusion_radius)
-    validate_libsize(libsize, source, dim, τ, η, replace)
 
+    τ isa Int ? maxτ = τ : maxτ = maximum(τ)
+    
+    points_available = length(target) - dim*maxτ
+    validate_exclusion_radius!(exclusion_radius, points_available)
+    validate_embedding_params(dim, maxτ, points_available, exclusion_radius)
+    validate_libsize(libsize, source, dim, maxτ, η, replace)
     ######################################################################
     # Embedding and the nearest neighbor search.
     # ----------------------------------------------------------
@@ -213,14 +217,19 @@ function crossmap(source, target;
     # because this is computationally cheaper for all but the
     # smallest library sizes and number of repetitions.
     ######################################################################
-    embedding_lags = collect(1:-τ:-(τ*dim - 1))
-    embedding = cembed([target], [1 for i in 1:dim], embedding_lags).points
-    n_embedding_pts = size(embedding, 2)
-
-    validate_embedding!(embedding, jitter)
-    tree = tree_type(embedding, distance_metric)
-
-    idxs, dists = knn(tree, embedding, dim + 2 + 2*exclusion_radius + 1, true)
+    τ isa Int ? τs = (collect(0:τ:(τ*(dim - 1)))...,) : τs = τ
+    js = (Int.(ones(dim))...,)
+    
+    # TODO: no need to do the transpose here to get the array of embedding 
+    # points. Use the nearest neighbour machinery in DelayEmbeddings instead
+    # that operate directly on the individual embedding vectors.
+    E = transpose(Matrix(DelayEmbeddings.genembed(target, τs, js)))
+    
+    n_embedding_pts = size(E, 2)
+    validate_embedding!(E, jitter)
+    tree = tree_type(E, distance_metric)
+   
+    idxs, dists = NearestNeighbors.knn(tree, E, dim + 2 + 2*exclusion_radius + 1, true)
     nearest_idxs = [zeros(Int32, dim + 1) for i = 1:n_embedding_pts]
     nearest_dists = [zeros(Float64, dim + 1) for i = 1:n_embedding_pts]
 
@@ -248,9 +257,9 @@ function crossmap(source, target;
 
     for k in 1:n_reps
         if η >= 0
-            sample!((1 + η):n_embedding_pts, point_idxs, replace = replace)
+            StatsBase.sample!((1 + η):n_embedding_pts, point_idxs, replace = replace)
         else
-            sample!(1:(n_embedding_pts - abs(η)), point_idxs, replace = replace)
+            StatsBase.sample!(1:(n_embedding_pts - abs(η)), point_idxs, replace = replace)
         end
 
         # For every point selected at this repetition, make a prediction.

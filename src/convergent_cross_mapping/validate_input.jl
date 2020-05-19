@@ -1,3 +1,5 @@
+import Distributions: Uniform 
+
 function validate_libsize(libsize, source, dim, τ, η, replace)
     n_available_pts = length(source) - dim*τ - abs(η)
     if libsize > n_available_pts
@@ -10,14 +12,16 @@ function validate_libsize(libsize, source, dim, τ, η, replace)
 end
 
 
-function validate_embedding!(embedding, jitter)
-    maxval = abs(maximum(embedding))
-    unique_pts = unique(embedding, dims = 2)
-    if size(unique_pts, 2) < size(embedding, 2)
-        #@warn "Not all embedding points are unique. Jittering coordinates by `rand(Uniform(-$jitter*maximum(embedding), $jitter*maximum(embedding)))`"
+function validate_embedding!(E, jitter)
+    
+    maxval = abs(maximum(E))
+    unique_pts = unique(E, dims = 2)
 
-        for i in 1:length(embedding)
-            embedding[i] += rand(Uniform(-jitter*maxval, jitter*maxval))
+    if size(unique_pts, 2) < size(E, 2)
+        @warn "Not all embedding points are unique. Jittering coordinates by `rand(Uniform(-$jitter*maximum(#), $jitter*maximum(E)))`"
+
+        for i in 1:length(E)
+            E[i] += rand(Uniform(-jitter*maxval, jitter*maxval))
         end
     end
 end
@@ -34,19 +38,17 @@ end
 
 
 function validate_embedding_params(dim, τ, points_available, exclusion_radius)
+    all(τ .<= 0) || throw(ArgumentError("Target time series is embedded using embedding lags τ <= 0, got τ=$τ."))
+    if length(τ) > 1
+        length(τ) == dim || throw(ArgumentError(("If multiple τs are given, then length(τs) must equal dim")))
+    end
     if dim == 1
         @warn "`dim=$dim`, but must be at least 2 to construct an embedding."
     end
     if dim <= 0
         throw(DomainError(dim, "`dim=$dim` must be at least 2 to construct an embedding."))
     end
-    if τ == 0
-        @warn "`τ=$τ` does not produce a delay embedding!"
-    end
-    if τ < 0
-        @warn "`τ=$τ` is negative. The cross mapping algorithm is implemented assuming τ is positive."
-    end
-    if dim*τ >= ceil(Int, 0.5*points_available)
+    if dim*maximum(τ) >= ceil(Int, 0.5*points_available)
         throw(DomainError(exclusion_radius, "`exclusion_radius=$exclusion_radius >= ceil(Int, 0.5*(length(target) - dim*τ))=$points_available`. Please reduce `exclusion_radius`."))
     end
 end

@@ -29,9 +29,10 @@
 	@testset "Embedding params" begin
 	    x, y = rand(100), rand(100)
 	    @test_throws DomainError crossmap(x, y, dim = -3)
-	    @test_throws DomainError crossmap(x, y, dim = 100, τ = 2)
-	    crossmap(x, y, dim = 3)
-	    crossmap(x, y, dim = 10, τ = 2)
+	    @test_throws ArgumentError crossmap(x, y, dim = 102, τ = -2)
+		@test crossmap(x, y, dim = 3) isa Vector
+		@test crossmap(x, y, dim = 3, τ = (0, -1, -2)) isa Vector
+	    @test crossmap(x, y, dim = 10, τ = -2) isa Vector
 	end
 
 	@testset "Exclusion radii" begin
@@ -41,9 +42,9 @@
 	end
 
 	@testset "Replacements" begin
-	    x, y = rand(100), rand(100)
-	    crossmap(x, y, replace = false)
-	    crossmap(x, y, replace = true)
+	    x, y = rand(300), rand(300)
+	    crossmap(x, y, replace = false, libsize = 100)
+	    crossmap(x, y, replace = true, libsize = 100)
 	end
 
 	@testset "Correspondence measures" begin
