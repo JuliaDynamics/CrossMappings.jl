@@ -195,7 +195,7 @@ function crossmap(source, target;
             dim::Int = 3,
             τ = -1,
             η::Int = 0,
-            libsize::Int = length(source) - dim*τ - abs(η),
+            libsize::Int = length(source) - dim*maximum(τ) - abs(η),
             n_reps::Int = 100,
             replace::Bool = true,
             exclusion_radius::Int = 0,
