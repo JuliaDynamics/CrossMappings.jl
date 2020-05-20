@@ -2,18 +2,18 @@
     @testset "Uncertainty measures" begin
         x, y = rand(100), rand(100)
         L = 50:10:100
-        @test convergentcrossmap(x, y, L, uncertainty_measure = :quantile) isa Tuple{Vector{Float64}, Array{Float64, 2}}
-        @test convergentcrossmap(x, y, L, uncertainty_measure = :std) isa Tuple{Vector{Float64}, Vector{Float64}}
-        @test convergentcrossmap(x, y, L, quantiles = [0.25, 0.40, 0.75]) isa Tuple{Vector{Float64}, Array{Float64, 2}}
-        @test convergentcrossmap(x, y, L, uncertainty_measure = :none) isa Vector{Float64}
+        @test convergentcrossmap(x, y, L, summarise = true, uncertainty_measure = :quantile) isa Tuple{Vector{Float64}, Array{Float64, 2}}
+        @test convergentcrossmap(x, y, L, summarise = true, uncertainty_measure = :std) isa Tuple{Vector{Float64}, Vector{Float64}}
+        @test convergentcrossmap(x, y, L, summarise = true, quantiles = [0.25, 0.40, 0.75]) isa Tuple{Vector{Float64}, Array{Float64, 2}}
+        @test convergentcrossmap(x, y, L, summarise = true, uncertainty_measure = :none) isa Vector{Float64}
     end
 
     @testset "Average measures" begin
         x, y = rand(100), rand(100)
         L = 50:10:100
-        @test convergentcrossmap(x, y, L, average_measure = :median) isa Tuple{Vector{Float64}, Array{Float64, 2}}
-        @test convergentcrossmap(x, y, L, average_measure = :mean) isa Tuple{Vector{Float64}, Array{Float64, 2}}
-        @test convergentcrossmap(x, y, L, average_measure = :none) isa Array{Float64, 2}
+        @test convergentcrossmap(x, y, L, summarise = true, average_measure = :median) isa Tuple{Vector{Float64}, Array{Float64, 2}}
+        @test convergentcrossmap(x, y, L, summarise = true, average_measure = :mean) isa Tuple{Vector{Float64}, Array{Float64, 2}}
+        @test convergentcrossmap(x, y, L, summarise = true, average_measure = :none) isa Array{Float64, 2}
     end
 
     @testset "Summarise" begin
