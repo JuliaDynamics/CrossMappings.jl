@@ -118,22 +118,26 @@ end
         dim::Int = 3,
         τ::Int = -1,
         libsize::Int = 10,
-        replace::Bool = false,
+        replace::Bool = true,
         n_reps::Int = 100,
         exclusion_radius::Int = 0,
         tree_type = NearestNeighbors.KDTree,
         distance_metric = Distances.Euclidean(),
         correspondence_measure = StatsBase.cor,
-        η::Int = 0)
+        η::Int = 0) → ρs
 
 ## Algorithm
 
-Compute the cross mapping between a `source` series and a `target` series.
+Compute the cross mapping between a `source` series and a `target` series. Returns 
+a vector `n_reps`-element vector `ρs` of predictions at the given `libsize`.
 
-## Arguments
+## Arguments 
 
 - **`source`**: The data series representing the putative source process.
 - **`target`**: The data series representing the putative target process.
+
+## Keyword arguments
+
 - **`dim`**: The dimension of the state space reconstruction (delay embedding)
     constructed from the `target` series. Default is `dim = 3`.
 - **`τ`**: The embedding lag for the delay embedding constructed from `target`.
