@@ -138,7 +138,7 @@ end
 
 ## Algorithm
 Compute the cross mapping between a `source` series and a `target` series over
-different `timeseries_lengths`.
+different `timeseries_lengths`[^Sugihara2012].
 
 ## Arguments
 - **`source`**: The data series representing the putative source process.
@@ -157,13 +157,13 @@ different `timeseries_lengths`.
     and `η < 0` are backwards lags (non-causal; `source`'s' future influences
     `target`'s past). Adjust the prediction lag if you
     want to performed lagged ccm
-    [(Ye et al., 2015)](https://www.nature.com/articles/srep14750).
+    [(Ye et al., 2015)](https://www.nature.com/articles/srep14750)[^Ye2015].
     Default is `η = 0`, as in
     [Sugihara et al. (2012)](http://science.sciencemag.org/content/early/2012/09/19/science.1227079).
     *Note: The sign of the lag `η` is organized to conform with the conventions in
-    [TransferEntropy.jl](), and is opposite to the convention used in the
+    TransferEntropy.jl, and is opposite to the convention used in the
     [`rEDM`](https://cran.r-project.org/web/packages/rEDM/index.html) package
-    ([Ye et al., 2016](https://cran.r-project.org/web/packages/rEDM/index.html)).*
+    ([Ye et al., 2016](https://cran.r-project.org/web/packages/rEDM/index.html)[^Ye2016]).*
 - **`libsize`**: Among how many delay embedding points should we sample time indices
     and look for nearest neighbours at each cross mapping realization (of which there
     are `n_reps`)?
@@ -193,15 +193,12 @@ different `timeseries_lengths`.
     be perfect prediction.
 
 ## References
-Sugihara, George, et al. "Detecting causality in complex ecosystems."
-Science (2012): 1227079.
-[http://science.sciencemag.org/content/early/2012/09/19/science.1227079](http://science.sciencemag.org/content/early/2012/09/19/science.1227079)
 
-Ye, Hao, et al. "Distinguishing time-delayed causal interactions using convergent cross mapping." Scientific Reports 5 (2015): 14750.
-[https://www.nature.com/articles/srep14750](https://www.nature.com/articles/srep14750)
+[^Sugihara2012]: Sugihara, George, et al. "Detecting causality in complex ecosystems." Science (2012): 1227079. [http://science.sciencemag.org/content/early/2012/09/19/science.1227079](http://science.sciencemag.org/content/early/2012/09/19/science.1227079)
 
-Ye, H., et al. "rEDM: Applications of empirical dynamic modeling from time series." R Package Version 0.4 7 (2016).
-[https://cran.r-project.org/web/packages/rEDM/index.html](https://cran.r-project.org/web/packages/rEDM/index.html)
+[^Ye2015]: Ye, Hao, et al. "Distinguishing time-delayed causal interactions using convergent cross mapping." Scientific Reports 5 (2015): 14750. [https://www.nature.com/articles/srep14750](https://www.nature.com/articles/srep14750)
+
+[^Ye2016]: Ye, H., et al. "rEDM: Applications of empirical dynamic modeling from time series." R Package Version 0.4 7 (2016). [https://cran.r-project.org/web/packages/rEDM/index.html](https://cran.r-project.org/web/packages/rEDM/index.html)
 """
 function ccm(source,
             target,
