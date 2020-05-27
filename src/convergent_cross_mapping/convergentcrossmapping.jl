@@ -42,7 +42,7 @@ different `timeseries_lengths` and return summary statistics of the results.
     Default is `η = 0`, as in
     [Sugihara et al. (2012)](http://science.sciencemag.org/content/early/2012/09/19/science.1227079).
     *Note: The sign of the lag `η` is organized to conform with the conventions in
-    [TransferEntropy.jl](), and is opposite to the convention used in the
+    TransferEntropy.jl, and is opposite to the convention used in the
     [`rEDM`](https://cran.r-project.org/web/packages/rEDM/index.html) package
     ([Ye et al., 2016](https://cran.r-project.org/web/packages/rEDM/index.html)).*
 - **`libsize`**: Among how many delay embedding points should we sample time indices
@@ -255,7 +255,7 @@ If `summarise = false`, then call `ccm` (returns raw crossmap skills).
     Default is `η = 0`, as in
     [Sugihara et al. (2012)](http://science.sciencemag.org/content/early/2012/09/19/science.1227079).
     *Note: The sign of the lag `η` is organized to conform with the conventions in
-    [TransferEntropy.jl](), and is opposite to the convention used in the
+    TransferEntropy.jl, and is opposite to the convention used in the
     [`rEDM`](https://cran.r-project.org/web/packages/rEDM/index.html) package
     ([Ye et al., 2016](https://cran.r-project.org/web/packages/rEDM/index.html)).*
 - **`libsize`**: Among how many delay embedding points should we sample time indices
