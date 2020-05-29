@@ -231,16 +231,14 @@ If `summarise = false`, then call `ccm` (returns raw crossmap skills).
 - **`timeseries_lengths`**: Time series length(s) for which to compute the
     cross mapping(s).
 
-## Summary keyword arguments
+## Keyword arguments
 - **`summarise`**: Should cross map skills be summarised for each time series length?
-    Default is `summarise = true`.
+    Default is `summarise = false`.
 - **`average_measure`**: Either `:median` or `:mean`. Default is `:median`.
 - **`uncertainty_measure`**: Either `:quantile` or `:std`. Default is `:quantile`.
 - **`quantiles`**: Compute uncertainty over quantile(s) if `uncertainty_measure`
     is `:quantile`. Default is `[0.327, 0.673]`, roughly corresponding to 1s for
     normally distributed data.
-
-## Keyword arguments to `crossmap`
 - **`dim`**: The dimension of the state space reconstruction (delay embedding)
     constructed from the `target` series. Default is `dim = 3`.
 - **`τ`**: The embedding lag for the delay embedding constructed from `target`.
