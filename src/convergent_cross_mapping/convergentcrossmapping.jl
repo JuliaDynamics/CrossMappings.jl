@@ -51,10 +51,10 @@ different `timeseries_lengths` and return summary statistics of the results.
     how many times do we cross map for this value of `libsize`?
     Default is `n_reps = 100`.
 - **`replace`**: Sample delay embedding points with replacement? Default is `replace = true`.
-- **`exclusion_radius`**: How many temporal neighbors of the delay embedding
+- **`theiler_window`**: How many temporal neighbors of the delay embedding
     point `target_embedding(t)` to exclude when searching for neighbors to
     determine weights for predicting the scalar point `source(t + η)`.
-    Default is `exclusion_radius = 0`.
+    Default is `theiler_window = 0`.
 - **`tree_type`**: The type of tree to build when looking for nearest neighbors.
     Must be a tree type from NearestNeighbors.jl. For now, this is either
     `BruteTree`, `KDTree` or `BallTree`.
@@ -170,10 +170,10 @@ different `timeseries_lengths`.
     how many times do we cross map for this value of `libsize`?
     Default is `n_reps = 100`.
 - **`replace`**: Sample delay embedding points with replacement? Default is `replace = true`.
-- **`exclusion_radius`**: How many temporal neighbors of the delay embedding
+- **`theiler_window`**: How many temporal neighbors of the delay embedding
     point `target_embedding(t)` to exclude when searching for neighbors to
     determine weights for predicting the scalar point `source(t + η)`.
-    Default is `exclusion_radius = 0`.
+    Default is `theiler_window = 0`.
 - **`tree_type`**: The type of tree to build when looking for nearest neighbors.
     Must be a tree type from NearestNeighbors.jl. For now, this is either
     `BruteTree`, `KDTree` or `BallTree`.
@@ -267,10 +267,10 @@ If `summarise = false`, then call `ccm` (returns raw crossmap skills).
     how many times do we cross map for this value of `libsize`?
     Default is `n_reps = 100`.
 - **`replace`**: Sample delay embedding points with replacement? Default is `replace = true`.
-- **`exclusion_radius`**: How many temporal neighbors of the delay embedding
+- **`theiler_window`**: How many temporal neighbors of the delay embedding
     point `target_embedding(t)` to exclude when searching for neighbors to
     determine weights for predicting the scalar point `source(t + η)`.
-    Default is `exclusion_radius = 0`.
+    Default is `theiler_window = 0`.
 - **`tree_type`**: The type of tree to build when looking for nearest neighbors.
     Must be a tree type from NearestNeighbors.jl. For now, this is either
     `BruteTree`, `KDTree` or `BallTree`.

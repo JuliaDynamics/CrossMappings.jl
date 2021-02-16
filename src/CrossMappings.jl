@@ -1,8 +1,5 @@
 module CrossMappings
 
-using Distances
-using NearestNeighbors
-using StateSpaceReconstruction
 using Statistics
 using Distributions
 using StatsBase

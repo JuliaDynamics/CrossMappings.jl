@@ -1,4 +1,5 @@
-import StateSpaceReconstruction: cembed
+using DelayEmbeddings
+using Neighborhood
 
 """
     predict_point!(predictions, i, source_values, u, w, dists, dim)
@@ -72,44 +73,6 @@ function predict_point!(predictions, i, source_values, u, w, distances, dim)
     end
 end
 
-
-function find_nearest!(nearest_idxs, nearest_dists, i, idxs, dists, dim, exclusion_radius)
-    if (2 * exclusion_radius + 2 + dim) > length(idxs[1])
-       throw(DomainError(exclusion_radius, "Too few points can be selected from `idxs=$idxs` with `dim=$dim` and `exclusion_radius=$exclusion_radius`."))
-    end
-
-    N = length(nearest_idxs)
-
-    for k = 1:N
-        # If exclusion_radius == 0, then skip the first
-        # point, because it is the distance to itself.
-        if exclusion_radius == 0
-            for j = 1:(dim + 1)
-                nearest_idxs[k][j] = idxs[k][j + 1]
-                nearest_dists[k][j] = dists[k][j + 1]
-            end
-        # Otherwise, find the nearest neighbors outside
-        # the temporal exclusion radius.
-        else
-            points_found = 0
-            # assume we have already checked a point, so that
-            # we skip the first neighbor (which is the point
-            # itself).
-            points_tried = 1
-            while points_found < (dim + 1)
-                if (idxs[k][points_tried + 1] < (i - exclusion_radius) ||
-                    idxs[k][points_tried + 1] > (i + exclusion_radius))
-                    nearest_idxs[k][points_found + 1] = idxs[k][points_tried + 1]
-                    nearest_dists[k][points_found + 1] = dists[k][points_tried + 1]
-                    points_found += 1
-                end
-                points_tried += 1
-            end
-        end
-    end
-end
-
-
 """
     crossmap(source, target;
         dim::Int = 3,
@@ -117,7 +80,7 @@ end
         libsize::Int = 10,
         replace::Bool = false,
         n_reps::Int = 100,
-        exclusion_radius::Int = 0,
+        theiler_window::Int = 0,
         tree_type = NearestNeighbors.KDTree,
         distance_metric = Distances.Euclidean(),
         correspondence_measure = StatsBase.cor,
@@ -156,10 +119,10 @@ Compute the cross mapping between a `source` series and a `target` series.
     how many times do we cross map for this value of `libsize`?
     Default is `n_reps = 100`.
 - **`replace`**: Sample delay embedding points with replacement? Default is `replace = true`.
-- **`exclusion_radius`**: How many temporal neighbors of the delay embedding
+- **`theiler_window`**: How many temporal neighbors of the delay embedding
     point `target_embedding(t)` to exclude when searching for neighbors to
     determine weights for predicting the scalar point `source(t + η)`.
-    Default is `exclusion_radius = 0`.
+    Default is `theiler_window = 0`.
 - **`tree_type`**: The type of tree to build when looking for nearest neighbors.
     Must be a tree type from NearestNeighbors.jl. For now, this is either
     `BruteTree`, `KDTree` or `BallTree`.
@@ -195,15 +158,15 @@ function crossmap(source, target;
             libsize::Int = length(source) - dim*τ - abs(η),
             n_reps::Int = 100,
             replace::Bool = true,
-            exclusion_radius::Int = 0,
+            theiler_window::Int = 0,
             jitter::Float64 = 1e-3,
-            tree_type = NearestNeighbors.KDTree,
-            distance_metric = Distances.Euclidean(),
+            tree_type = KDTree,
+            distance_metric = Euclidean(),
             correspondence_measure = StatsBase.cor)
     points_available = length(target) - dim*τ
      
-    validate_exclusion_radius!(exclusion_radius, points_available)
-    validate_embedding_params(dim, τ, points_available, exclusion_radius)
+    validate_theiler_window!(theiler_window, points_available)
+    validate_embedding_params(dim, τ, points_available, theiler_window)
     validate_libsize(libsize, source, dim, τ, η, replace)
 
     ######################################################################
@@ -213,21 +176,20 @@ function crossmap(source, target;
     # because this is computationally cheaper for all but the
     # smallest library sizes and number of repetitions.
     ######################################################################
-    embedding_lags = collect(1:-τ:-(τ*dim - 1))
-    embedding = cembed([target], [1 for i in 1:dim], embedding_lags).points
-    n_embedding_pts = size(embedding, 2)
+    τs = collect(1:-τ:-(τ*dim - 1))
+    js = [1 for i in 1:dim]
+    E = genembed(target, js, τs)
 
-    validate_embedding!(embedding, jitter)
-    tree = tree_type(embedding, distance_metric)
+    #embedding = cembed([target], [1 for i in 1:dim], embedding_lags).points
+    n_embedding_pts = length(E)
 
-    idxs, dists = knn(tree, embedding, dim + 2 + 2*exclusion_radius + 1, true)
-    nearest_idxs = [zeros(Int32, dim + 1) for i = 1:n_embedding_pts]
-    nearest_dists = [zeros(Float64, dim + 1) for i = 1:n_embedding_pts]
+    # TODO: jitter points if many are equal. this would require using MVectors in 
+    # DelayEmbeddings
+    #validate_embedding!(embedding, jitter)
 
-    for i in 1:n_embedding_pts
-        find_nearest!(nearest_idxs, nearest_dists, i, idxs, dists, dim, exclusion_radius)
-    end
-
+    tree = searchstructure(KDTree, E, distance_metric)
+    nearest_idxs, nearest_dists = bulksearch(tree, E.data, NeighborNumber(dim + 1), Theiler(theiler_window))
+  
     ######################################################################
     # Cross mapping
     ######################################################################
@@ -245,7 +207,7 @@ function crossmap(source, target;
     # Pre-allocate vector to hold the correspondences between actual
     # and predicted values of the source time series.
     correspondence = zeros(Float64, n_reps)
-
+    
     for k in 1:n_reps
         if η >= 0
             sample!((1 + η):n_embedding_pts, point_idxs, replace = replace)

@@ -1,22 +1,4 @@
 @testset "Cross mapping" begin
-	@testset "Find nearest indices within exclusion radius" begin
-	    some_idxs = 1:21 |> collect
-	    some_dists = rand(length(some_idxs))
-	    d = 3
-	    exclusion_radius = 7
-	    dists = rand(length(some_idxs))
-	    idxs, dists = [some_idxs, some_idxs.+1], [some_dists, some_dists]
-	    libsize = length(some_idxs)
-	    pt_time_idx = 10
-	    nearest_idxs = [Vector{Int32}(undef, d + 1) for i = 1:2]
-	    nearest_dists = [Vector{Float64}(undef, d + 1) for i = 1:2]
-	    find_nearest!(nearest_idxs, nearest_dists, pt_time_idx, idxs, dists, d, exclusion_radius)
-	    @test nearest_idxs[1] == [2, 18, 19, 20]
-	    @test nearest_idxs[2] == [18, 19, 20, 21]
-
-	    # Too large exclusion radius
-	    @test_throws DomainError find_nearest!(nearest_idxs, nearest_dists, 12, idxs, dists, d, exclusion_radius + 10)
-	end
 
 	@testset "Prediction lags" begin
 	    x, y = rand(100), rand(100)
@@ -36,8 +18,8 @@
 
 	@testset "Exclusion radii" begin
 	    x, y = rand(100), rand(100)
-	    [crossmap(x, y, exclusion_radius = i) for i in rand(1:25, 10)]
-	    #@test_throws DomainError crossmap(x, y, exclusion_radius = -1)
+	    [crossmap(x, y, theiler_window = i) for i in rand(1:25, 10)]
+	    #@test_throws DomainError crossmap(x, y, theiler_window = -1)
 	end
 
 	@testset "Replacements" begin

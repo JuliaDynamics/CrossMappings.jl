@@ -11,7 +11,7 @@ end
 
 
 function validate_embedding!(embedding, jitter)
-    maxval = abs(maximum(embedding))
+    maxval = abs.(maximum(embedding))
     unique_pts = unique(embedding, dims = 2)
     if size(unique_pts, 2) < size(embedding, 2)
         #@warn "Not all embedding points are unique. Jittering coordinates by `rand(Uniform(-$jitter*maximum(embedding), $jitter*maximum(embedding)))`"
@@ -23,17 +23,17 @@ function validate_embedding!(embedding, jitter)
 end
 
 
-function validate_exclusion_radius!(exclusion_radius, points_available)
-    if exclusion_radius < 0
-        throw(DomainError(exclusion_radius, "`exclusion_radius=$exclusion_radius`. Must be ≧ 0."))
+function validate_theiler_window!(theiler_window, points_available)
+    if theiler_window < 0
+        throw(DomainError(theiler_window, "`theiler_window=$theiler_window`. Must be ≧ 0."))
     end
-    if exclusion_radius >= ceil(Int, 0.5*points_available)
-        throw(DomainError(exclusion_radius, "`exclusion_radius=$exclusion_radius >= ceil(Int, 0.5*(length(target) - dim*τ))=$points_available`. Please reduce `exclusion_radius`."))
+    if theiler_window >= ceil(Int, 0.5*points_available)
+        throw(DomainError(theiler_window, "`theiler_window=$theiler_window >= ceil(Int, 0.5*(length(target) - dim*τ))=$points_available`. Please reduce `theiler_window`."))
     end
 end
 
 
-function validate_embedding_params(dim, τ, points_available, exclusion_radius)
+function validate_embedding_params(dim, τ, points_available, theiler_window)
     if dim == 1
         @warn "`dim=$dim`, but must be at least 2 to construct an embedding."
     end
@@ -47,7 +47,7 @@ function validate_embedding_params(dim, τ, points_available, exclusion_radius)
         @warn "`τ=$τ` is negative. The cross mapping algorithm is implemented assuming τ is positive."
     end
     if dim*τ >= ceil(Int, 0.5*points_available)
-        throw(DomainError(exclusion_radius, "`exclusion_radius=$exclusion_radius >= ceil(Int, 0.5*(length(target) - dim*τ))=$points_available`. Please reduce `exclusion_radius`."))
+        throw(DomainError(theiler_window, "`theiler_window=$theiler_window >= ceil(Int, 0.5*(length(target) - dim*τ))=$points_available`. Please reduce `theiler_window`."))
     end
 end
 
@@ -75,7 +75,7 @@ export
 validate_libsize,
 validate_embedding!,
 validate_embedding_params,
-validate_exclusion_radius!,
+validate_theiler_window!,
 validate_uncertainty_measure,
 validate_average_measure,
 validate_output_selection

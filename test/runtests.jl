@@ -5,9 +5,6 @@ end
 using CrossMappings
 using Test
 using StatsBase
-using Distances
-using NearestNeighbors
-using StateSpaceReconstruction
 
 include("crossmapping.jl")
 include("convergentcrossmapping.jl")
